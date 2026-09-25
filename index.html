@@ -560,7 +560,7 @@ function renderIdentity(){
   const who=SYSTEM_META.operatorName&&SYSTEM_META.operatorName!=='Operator'?SYSTEM_META.operatorName+' · ':'';
   $('#today').textContent=who+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const hero=$('#hero-copy');
-  if(hero)hero.textContent='Your ventures, one control plane. The Gravity Engine turns current state into a visible priority order around '+SYSTEM_META.sunName+'.';
+  if(hero)hero.textContent=VENTURES.length+' active venture'+(VENTURES.length===1?'':'s')+', one control plane. The Gravity Engine turns current state into a visible priority order around '+SYSTEM_META.sunName+'.';
 }
 function renderDeadlines(){
   const el=$('#dlstrip');el.innerHTML='';
@@ -603,6 +603,13 @@ function planetPanel(v){
   if(v.deadline){const n=dayDiff(v.deadline.date);h+='<div class="p-due'+(n<=7?' hot':'')+'">'+esc(v.deadline.label)+' · '+esc(fmtShort(v.deadline.date))+' · '+esc(dueText(n))+'</div>';}
   if(v.sealed)h+='<div class="sealed">Confidential venture. Keep non-public design details out of public source and external tools until the disclosure strategy is decided.</div>';
   h+='<div class="p-block"><h3>Next move</h3><p class="p-next">'+esc(v.next)+'</p></div>';
+  if(SERVER_STATE.available&&!window.claude){
+    h+='<div class="p-block"><button class="btn" id="editventure" type="button">Update priority inputs</button><div id="vedit" hidden style="margin-top:14px">'+
+      '<label class="eyebrow" for="vnext">Next move</label><textarea id="vnext" rows="3" style="width:100%;margin:7px 0 12px">'+esc(v.next)+'</textarea>'+
+      '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">'+
+      ['speed','cash','stability','meaning','blockers'].map(k=>'<label style="font-size:12px;color:var(--dust)">'+esc(k)+'<input id="vs-'+k+'" type="number" min="1" max="5" step="1" value="'+Number(v.s[k]||1)+'" style="width:100%;margin-top:4px"></label>').join('')+
+      '</div><div class="acts" style="margin-top:12px"><button class="btn primary" id="saveventure" type="button">Save to System</button><span class="note" id="veditnote"></span></div></div></div>';
+  }
   h+=extras(v);
   h+='<div class="p-block"><h3>Why it sits here</h3>'+axisRows(v)+'</div>';
   return h;
@@ -634,7 +641,35 @@ function sunPanel(){
   return '<div class="p-eyebrow">The sun</div><h2 class="p-title" id="ptitle">'+esc(SYSTEM_META.sunName)+'</h2><p class="p-what" style="font-family:var(--serif);font-size:22px;line-height:1.35;color:var(--star)">'+esc(SYSTEM_META.sunSubtitle||'the reason')+'.</p>'+
    '<div class="p-block"><p>The center of the map is the reason the portfolio exists. Stability carries the heaviest default weight ('+W_DEFAULT.stability.toFixed(1)+'×), and the closest active priority right now is '+topButton+'.</p></div>';
 }
-function wirePanel(){}
+function wirePanel(){
+  const v=panelId&&byId(panelId);
+  if(!v)return;
+  const open=$('#editventure'),form=$('#vedit'),save=$('#saveventure'),note=$('#veditnote');
+  if(open&&form)open.addEventListener('click',()=>{form.hidden=!form.hidden;open.textContent=form.hidden?'Update priority inputs':'Close editor';});
+  if(save&&form)save.addEventListener('click',async()=>{
+    const score={};
+    let valid=true;
+    ['speed','cash','stability','meaning','blockers'].forEach(k=>{
+      const n=Number($('#vs-'+k).value);
+      if(!Number.isFinite(n)||n<1||n>5)valid=false;
+      else score[k]=Math.round(n);
+    });
+    const next=$('#vnext').value.trim();
+    if(!valid||!next){if(note)note.textContent='Use scores from 1 to 5 and keep a next move.';return;}
+    save.disabled=true;if(note)note.textContent='Saving…';
+    try{
+      await postSystemState('venture_patch',{id:v.id,patch:{next,s:score}});
+      v.next=next;v.s=Object.assign({},v.s,score);
+      recompute();
+      pbody.innerHTML=planetPanel(v);
+      wirePanel();
+      await refreshLedger();
+    }catch(e){
+      save.disabled=false;
+      if(note)note.textContent='Couldn’t save. Your server state was not changed.';
+    }
+  });
+}
 
 
 /* ================= briefing ================= */
@@ -667,6 +702,7 @@ function renderRanking(){
     return '<li class="rk"><span class="rk-n">'+(i+1)+'</span><button class="rk-name" type="button" data-open="'+v.id+'">'+esc(v.name)+'<span>'+esc(v.tag)+'</span></button><span class="rk-bar" role="img" aria-label="Score breakdown for '+esc(v.name)+'">'+segs+'</span><span class="rk-g">'+r.g+'</span></li>';}).join('');
 }
 function renderComets(){
+  const section=$('#comets');if(section)section.hidden=!COMETS.length;
   $('#cometlist').innerHTML=COMETS.map(c=>{const g=gravity(c);const pos=RANK.filter(r=>r.g>g).length+1;
     return '<article class="comet"><div class="eyebrow">Comet</div><h3>'+esc(c.name)+'</h3><p class="pitch">'+esc(c.pitch)+'</p><dl><dt>Uses</dt><dd>'+esc(c.uses)+'</dd><dt>First $</dt><dd>'+esc(c.first)+'</dd><dt>Why now</dt><dd>'+esc(c.why)+'</dd></dl><div class="enter">Gravity '+g+' · would enter at orbit '+pos+' of '+(VENTURES.length+1)+'</div><div><button class="btn" type="button" data-open="'+c.id+'">Find it in the sky</button></div></article>';}).join('');
 }

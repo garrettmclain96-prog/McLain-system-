@@ -39,7 +39,7 @@ function walk(dir){
     let text='';
     try{text=readFileSync(full,'utf8');}catch{continue;}
     const rel=relative(rootPath,full);
-    for(const term of forbidden)if(text.includes(term))fail(rel+' contains private shell term: '+term);
+    if(rel!=='scripts/check.mjs')for(const term of forbidden)if(text.includes(term))fail(rel+' contains private shell term: '+term);
     for(const re of secretPatterns){
       if(re.test(text))fail(rel+' may contain a secret: '+re.source);
       re.lastIndex=0;
@@ -51,6 +51,18 @@ walk(rootPath);
 const src=readFileSync(new URL('../src/system.html',import.meta.url),'utf8');
 const index=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const middleware=readFileSync(new URL('../middleware.js',import.meta.url),'utf8');
+const scriptOpen=src.lastIndexOf('<script>');
+const scriptClose=src.lastIndexOf('</script>');
+if(scriptOpen<0||scriptClose<=scriptOpen)fail('inline application script missing');
+else{
+  const browserJs=src.slice(scriptOpen+8,scriptClose);
+  try{
+    const { Script }=await import('node:vm');
+    new Script(browserJs,{filename:'src/system.inline.js'});
+    console.log('PASS inline browser JavaScript parses');
+  }catch(e){fail('inline browser JavaScript parse error: '+e.message);}
+}
+
 const required=[
   ['state hydrator',src.includes('hydrateSystemState')],
   ['event ledger',src.includes('renderEvents')],
