@@ -8,6 +8,7 @@ const COOKIE = 'mclain_session';
 const PUBLIC_PATHS = new Set([
   '/login.html',
   '/api/login',
+  '/api/session/verify',
   '/manifest.webmanifest',
   '/icons/apple-touch-icon.png',
   '/icons/icon-192.png',
