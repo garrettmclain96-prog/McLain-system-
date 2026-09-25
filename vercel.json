@@ -8,6 +8,12 @@
     },
     "api/chatgpt.js": {
       "maxDuration": 60
+    },
+    "api/state.js": {
+      "maxDuration": 30
+    },
+    "api/session/verify.js": {
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -29,6 +35,10 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
         }
       ]
     }

@@ -32,7 +32,7 @@ export async function POST(request) {
     headers: {
       Location: '/',
       'cache-control': 'no-store',
-      'Set-Cookie': `mclain_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${90 * DAY}`,
+      'Set-Cookie': `mclain_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Priority=High; Max-Age=${90 * DAY}`,
     },
   });
 }

@@ -471,7 +471,7 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
         <li>NSF SBIR/STTR Phase I: up to $275K; the Nov 4, 2026 deadline requires an accepted Project Pitch first. <a href="https://seedfund.nsf.gov/" target="_blank" rel="noopener">NSF America’s Seed Fund</a></li>
         <li>Park prospects come from the 78-park Gulf Coast list compiled today (52 independent, 33 waterfront). Confirm details before you call.</li>
         <li>Gravity scores are my estimates from your notes, and they’re meant to be argued with. Move the weights, or ask the System to.</li>
-        <li>Your iPhone app: <a href="https://mclain-system.vercel.app" target="_blank" rel="noopener">mclain-system.vercel.app</a> (password: Vercel → mclain-system → Settings → Environment Variables → SITE_PASSWORD) · Source: <a href="https://github.com/garrettmclain96-prog/McLain-system-" target="_blank" rel="noopener">GitHub</a></li>
+        <li>Your iPhone app: <a href="https://mclain-system.vercel.app" target="_blank" rel="noopener">mclain-system.vercel.app</a> · authenticated private-state sync enabled on the self-hosted build.</li>
         <li>Round one, for reference: <a href="https://gamma.app/docs/axda1vt7cmw2azz" target="_blank" rel="noopener">Aurora deck</a> · <a href="https://docs.google.com/document/d/1I2kzsy0VAVcXzvvvpD87ycRgfn71voQlmz1IcN3C--w/edit" target="_blank" rel="noopener">Aurora Genesis field dossier</a></li>
       </ul>
     </div>
@@ -500,154 +500,80 @@ const AXES=[
   {k:'meaning',label:'Meaning',hint:'What it means beyond money',color:'#C39BFF'},
   {k:'blockers',label:'Blocker drag',hint:'Subtracts what stands in the way',color:'#FF6E7F',neg:true},
 ];
-const W_DEFAULT={speed:1.3,cash:1.0,stability:1.5,deadline:1.0,meaning:0.5,blockers:0.8};
+let W_DEFAULT={speed:1.3,cash:1.0,stability:1.5,deadline:1.0,meaning:0.5,blockers:0.8};
 let W=Object.assign({},W_DEFAULT);
 
-const VENTURES=[
- {id:'jops',name:'Jamaica Ops',tag:'Park operations software',
-  what:'The inspector app and guest-report system you built for Jamaica Beach RV Resort, packaged to license to other parks.',
-  s:{speed:3,cash:4,stability:4,meaning:3,blockers:3},
-  why:{speed:'Pays once a second park signs.',cash:'Your model: a license of $250–$500 a month per park.',stability:'Recurring license income.',meaning:'Proves your systems work beyond one park.',blockers:'Needs park introductions, and the payment terms with your partner aren’t settled.'},
-  deadline:{date:'2026-09-28',label:'RV Buddy intro ask'},
-  next:'Send the RV Buddy intro request before Sunday and ask for three park operators by name. The draft is in Gmail: “Quick ask: 3 park-operator intros for a shore-power safety pilot.”',
-  palette:['#0D3A56','#3FA7C4','#D6F3F8'],style:'ocean'},
- {id:'seawall',name:'Seawall Turnover Co.',tag:'Short-term-rental turnovers',
-  what:'Same-day cleaning turnovers for Airbnb and VRBO hosts on Galveston Island, with a photo report after every clean.',
-  s:{speed:5,cash:4,stability:4,meaning:2,blockers:2},
-  why:{speed:'One host and your own hands: a first turnover could happen this week.',cash:'Priced per property, and every repeat host is weekly income.',stability:'Recurring bookings you can schedule around your job.',meaning:'The cash engine that funds everything else.',blockers:'Supplies, insurance, and an entity to invoice from.'},
-  next:'Connect the v0 site’s booking form to your email, then offer your first host a turnover with the photo report.',
-  palette:['#2F6F9A','#E6D6B3','#FBF5E6'],style:'ocean'},
- {id:'entity',name:'McLain Systems',tag:'The holding company',
-  what:'The LLC every other planet docks into: the invoice address, the wall between business risk and your life, and the entity that grants require.',
-  s:{speed:3,cash:1,stability:5,meaning:2,blockers:1},
-  why:{speed:'A filing, not a build. Days, not months.',cash:'Earns nothing on its own.',stability:'Separates business risk from your personal life and makes your income official.',meaning:'Makes the rest real on paper.',blockers:'The $300 state filing fee.'},
-  deadline:{date:'2026-11-04',label:'Needed before NSF'},
-  unlocks:['aurora','valet','seawall','jops'],
-  next:'File the Texas Certificate of Formation (Form 205, $300), then register on SAM.gov for a UEI. NSF won’t accept a proposal without one, and registration can take weeks.',
-  palette:['#8D97AD','#3E4760','#D7DDEA'],style:'metal',ring:true},
- {id:'aurora',name:'Aurora',tag:'AI repair brain for RV parks',
-  what:'Diagnoses park and RV faults with safety built in. Today it gained the Hazard Codex, ten protocols it applies to every case.',
-  s:{speed:2,cash:5,stability:2,meaning:4,blockers:3},
-  why:{speed:'Grant money moves on agency timelines.',cash:'NSF SBIR/STTR Phase I pays up to $275K.',stability:'Grant income comes in lumps.',meaning:'Your field knowledge, turned into software.',blockers:'Needs an accepted NSF Project Pitch and a UEI first.'},
-  deadline:{date:'2026-11-04',label:'NSF SBIR/STTR Phase I'},
-  next:'Submit the NSF Project Pitch now. The full proposal can only follow an accepted pitch, and McLain Systems has to exist first.',
-  palette:['#10223A','#39D9A0','#8B6CFF'],style:'bands'},
- {id:'valet',name:'Island Valet Trash',tag:'Door-side trash pickup',
-  what:'A standalone service under your own LLC that the resort offers to guests. Guests already ask for it every day, and with no compactor on site the dumpsters overflow.',
-  s:{speed:4,cash:3,stability:4,meaning:2,blockers:3},
-  why:{speed:'The demand is already at the front desk.',cash:'Per-site subscriptions. The price isn’t set yet.',stability:'A nightly, predictable route.',meaning:'Fixes a daily guest complaint.',blockers:'Needs the resort’s yes and your own entity.'},
-  next:'Bring the print kit to the resort and ask for a 30-day pilot at the front desk. Pitch it as a guest service that costs the resort nothing.',
-  palette:['#0B2540','#9ED9C8','#F3E8D2'],style:'ocean'},
- {id:'mineral',name:'Mineral rights',tag:'Seven Texas counties',
-  what:'Family mineral interests to verify across Nacogdoches, Robertson, Milam, Schleicher, Houston, Fannin and Kaufman counties.',
-  s:{speed:2,cash:3,stability:3,meaning:3,blockers:4},
-  why:{speed:'Records first; any lease comes later.',cash:'Unknown until the deeds are pulled.',stability:'Passive income, if the interests are real.',meaning:'Family history, in the ground.',blockers:'Seven counties of records, and paid “finder” services prey on exactly this.'},
-  next:'Pull the deeds yourself before you pay anyone. Start with the two counties that have free official search.',
-  palette:['#5A2E1A','#C98A4B','#E8C08A'],style:'rock'},
- {id:'glovegate',name:'GloveGate',tag:'Hardware invention · top priority',
-  what:'Your dispenser invention. Its mechanism is kept off this page on purpose until the provisional is filed.',
-  s:{speed:1,cash:5,stability:1,meaning:4,blockers:4},
-  why:{speed:'Filing and prototype runs come before any sale.',cash:'A product line plus cartridges and licensing.',stability:'Big upside, no near-term income.',meaning:'Your invention, start to finish.',blockers:'Nothing is filed, the employer-rights check isn’t done, and prototype tests are pending.'},
-  deadline:{date:'2027-01-31',label:'Go / no-go'},
-  sealed:true,
-  next:'File the provisional first: $65 at the micro-entity rate. Before you certify that you’re the sole owner, read your employment agreement for invention-assignment terms.',
-  palette:['#161A45','#8E98FF','#3A3F9A'],style:'bands'},
- {id:'still',name:'STILL STANDING',tag:'Novella · short film',
-  what:'A man in a room filling with water, protecting one flame.',
-  s:{speed:1,cash:1,stability:2,meaning:5,blockers:1},
-  why:{speed:'Art keeps its own clock.',cash:'Not a money planet.',stability:'Keeps you steady.',meaning:'The story of why you build.',blockers:'Only time.'},
-  next:'The teaser is being cut in Descript. The opening scene is at the bottom of this page.',
-  palette:['#0F2742','#3E7FB8','#FFB066'],style:'ocean'},
- {id:'turnbot',name:'TurnBot Pro',tag:'Smart-home invention · provisional filed',
-  what:'A smart-home device with a provisional patent on file, no prototype and no deal yet.',
-  s:{speed:2,cash:3,stability:1,meaning:2,blockers:3},
-  why:{speed:'Needs a prototype or a buyer first.',cash:'Licensing to smart-home makers.',stability:'No near-term income.',meaning:'Proof you can invent more than once.',blockers:'No prototype, no deal, and converting the patent costs real money.'},
-  deadline:{date:'2027-03-31',label:'Non-provisional due'},
-  next:'Decide before March 31, 2027: build a prototype, pay for the non-provisional, or let it lapse on purpose. Letting it go is a fair choice if it frees money for the planets closer in.',
-  palette:['#3A2213','#D08A52','#F2C79B'],style:'bands',ring:true},
- {id:'vaultos',name:'VaultOS',tag:'Your personal file vault',
-  what:'The Lovable app that holds and sorts the documents from your phone.',
-  s:{speed:1,cash:1,stability:3,meaning:2,blockers:2},
-  why:{speed:'A personal tool, not a product yet.',cash:'Not built to earn.',stability:'Paperwork in order steadies everything else.',meaning:'Your records, finally findable.',blockers:'The fix plan is ready and waits on your approval.'},
-  next:'Approve Lovable’s fix plan in the editor. It found 78 projects for 323 files, 700 tags, and 182 finished files with no project, partly from a race condition that silently drops the project.',
-  palette:['#10141F','#F2B633','#3A3F52'],style:'metal'},
- {id:'rvhub',name:'Aurora RV Hub',tag:'Sensor hub hardware',
-  what:'A Raspberry Pi and ESP32 sensor hub, about $175 in parts, that watches breakers and batteries and reports to Aurora.',
-  s:{speed:1,cash:3,stability:1,meaning:3,blockers:3},
-  why:{speed:'Hardware, then pilots, then sales.',cash:'An upsell for each park.',stability:'No near-term income.',meaning:'Gives Aurora eyes on the pedestals.',blockers:'Needs Aurora customers first.'},
-  next:'Park it until Aurora has a paying park. The hub is the upsell, not the way in.',
-  palette:['#15301F','#6FC27D','#C8F0B9'],style:'rock'},
- {id:'sand',name:'Sand & Done',tag:'Beach sargassum relocation',
-  what:'Hand-raked beach cleaning and sargassum relocation for West End beachfront owners, HOAs, rental hosts and beach events. You already priced it for Pointe West: $2,500–$3,500 a month, or $12,500–$16,000 for a full season.',
-  s:{speed:2,cash:4,stability:3,meaning:3,blockers:3},
-  why:{speed:'Sargassum season runs May through September, so the next paying window opens in spring.',cash:'Your Pointe West proposal: up to $16,000 for one HOA season.',stability:'Seasonal, but a season contract locks it in.',meaning:'Keeps the beach you live on clean and feeds the dunes.',blockers:'Park Board vendor rules, insurance, and an entity to sign contracts under.'},
-  next:'Settle one fact before you pitch again: your proposal calls you a registered Park Board vendor, and your blueprint says raking private property needs no permit. Confirm the rules with the Park Board, then send Pointe West a 2027 season proposal before spring.',
-  palette:['#1F6F8B','#E3C88E','#8A6A2A'],style:'ocean'},
- {id:'laundry',name:'Island Clean Laundromat',tag:'West End laundromat',
-  what:'A modern laundromat with wash-and-fold, delivery and rental linens. Your April plan found no laundromat anywhere on the West End.',
-  s:{speed:1,cash:4,stability:3,meaning:2,blockers:5},
-  why:{speed:'Financing, deal sourcing and setup come first. Your own timeline puts opening at month six.',cash:'Your plan projects $27K–$59K net in year one.',stability:'Residents make a steady base, but it starts with $81K–$149K of financing.',meaning:'A storefront of your own on the island.',blockers:'Capital. Seller financing, a microloan and grants all have to line up.'},
-  next:'Wait until a cash planet is paying. Then follow your plan’s Scenario B, buying an existing laundromat with seller financing, and start with a free call to the Small Business Development Center.',
-  palette:['#2A6FB0','#BFE6F5','#FFFFFF'],style:'bands'},
- {id:'parcel',name:'ParcelForge',tag:'Property field app',
-  what:'Look up a parcel in the field, see its record, save it and build a report. The current build runs on fictional demo records, with an adapter for Galveston appraisal-district data ready to connect.',
-  s:{speed:1,cash:3,stability:1,meaning:2,blockers:4},
-  why:{speed:'The next step is a production build, not a sale.',cash:'Software licensing, once it has real data and buyers.',stability:'No near-term income.',meaning:'Puts your field sense next to property data, and it could help the mineral-rights work.',blockers:'Live data and permission to redistribute it, a real backend, sign-in and storage.'},
-  next:'Before you build more, find out whether you’re allowed to redistribute Galveston appraisal-district data. The answer decides what the product can be.',
-  palette:['#1D2B3A','#5BC0BE','#F2E9DC'],style:'rock'},
- {id:'aqua',name:'AquaStep',tag:'Pool-care invention · unfiled',
-  what:'Your pool-maintenance product line for resorts. Its design stays off this page until you decide whether to file.',
-  s:{speed:1,cash:3,stability:1,meaning:2,blockers:4},
-  why:{speed:'Prototype, testing and certification come first.',cash:'Resort bundles plus replacement parts.',stability:'No near-term income.',meaning:'An invention that started at the resort pool.',blockers:'Two directions to choose between, a spec whose numbers don’t add up, and no filing decision.'},
-  sealed:true,
-  next:'Choose one direction, the full resort system or the low-cost disposable version, and fix the spec before any prototype: one part is listed heavier than the whole product. Treat it like GloveGate, with nothing public before you decide on filing.',
-  palette:['#0B4F6C','#01BAEF','#20BF55'],style:'ocean'},
+// Safe public fallback only. The real operating state is loaded after authentication
+// from /api/state and cached on this device for resilience.
+let VENTURES=[
+ {id:'system',name:'McLain System',tag:'Private operating system',
+  what:'The authenticated control plane for projects, priorities, deadlines and execution.',
+  s:{speed:3,cash:3,stability:5,meaning:5,blockers:1},
+  why:{speed:'The shell is already deployable.',cash:'It coordinates the assets that produce revenue.',stability:'Centralized state reduces duplicated work.',meaning:'It keeps execution focused.',blockers:'Private state is unavailable in fallback mode.'},
+  next:'Reconnect private state to restore the full operating map.',
+  palette:['#18233B','#F4B740','#E9EDF7'],style:'metal',ring:true}
 ];
 const byId=id=>VENTURES.find(v=>v.id===id);
+let COMETS=[];
+let PROSPECTS=[];
+let DEADLINES=[];
+let BRIEF_DEFAULT={date:'',headline:'Private state is not connected. The control-plane shell is still available.',items:[]};
 
-const COMETS=[
- {id:'storm',name:'Storm-Ready Hosts',pitch:'Hurricane-season prep and post-storm photo checks for Galveston hosts who live off the island.',
-  uses:'Seawall’s photo-report routine and your beach-house know-how.',first:'Sell it as an add-on to your first Seawall host.',
-  why:'Atlantic hurricane season runs June 1 to November 30. An owner who lives off the island can’t see the house after a storm. You can.',
-  s:{speed:4,cash:3,stability:3,meaning:2,blockers:2}},
- {id:'audit',name:'Pedestal Safety Audit',pitch:'A one-visit shore-power safety check for RV parks, delivered as an Aurora report.',
-  uses:'The Hazard Codex, your hot-skin procedure, and the 78-park Gulf Coast list.',first:'Do the first park free, from the prospect list, and charge the second.',
-  why:'Hot skin near water can kill, and most parks test pedestals only after something goes wrong. Anything past a non-contact check goes to a licensed electrician.',
-  s:{speed:3,cash:3,stability:3,meaning:4,blockers:3}},
- {id:'kit',name:'Valet Trash Park Kit',pitch:'License the whole Island Valet Trash playbook to other parks: the print kit, the sign-up app and the route sheet.',
-  uses:'Today’s print kit, the Base44 app, and 52 independent parks on your list.',first:'Bundle it with a Jamaica Ops license.',
-  why:'Any park with overflowing dumpsters hears the same guest complaint you do.',
-  s:{speed:3,cash:3,stability:4,meaning:2,blockers:3}},
- {id:'energy',name:'Park Energy Audit',pitch:'Pump and solar savings audits for parks with pools and lift stations.',
-  uses:'Your pump affinity-law analysis and the solar PPA research you already did for the resort.',first:'Turn the resort presentation into a one-page audit template.',
-  why:'Pump power falls with the cube of pump speed, so a 20% slowdown cuts power roughly in half. That math sells itself.',
-  s:{speed:2,cash:3,stability:3,meaning:2,blockers:3}},
-];
+const STATE_CACHE_KEY='mclain-system.state.v2';
+let SERVER_STATE={available:false,version:null,source:'fallback',updatedAt:null};
 
-const PROSPECTS=[
- ['Galveston RV Resort & Marina','Galveston',168,'(409) 744-2837','https://www.galvestonbayrv.com/'],
- ['Bay RV Park','San Leon',144,'(281) 339-5557','https://www.galveston.com/lodging/rvpark/bay-rv-park/'],
- ['Bolivar Peninsula RV Park','Crystal Beach',125,'(409) 877-1828','https://bolivarpeninsularvpark.com/'],
- ["Austin's Landing RV Park and Resort",'Surfside Beach',110,'','https://austinslanding.com/'],
- ['Beachfront RV Park and Resort','Surfside Beach',100,'','https://www.beachfrontrvresort.com/'],
- ['Willow Lake RV Resort','League City',100,'','https://www.willowlakervresort.com/'],
- ['Serendipity Bay Resort RV Park and Marina','Palacios',80,'(361) 972-5454','https://www.serendipitybayresort.com/'],
- ['Waterside RV Resort','Sargent',80,'','https://watersidecanalresort.com/'],
-];
-
-const DEADLINES=[
- {label:'RV Buddy intro ask',date:'2026-09-28',planet:'jops'},
- {label:'NSF Phase I',date:'2026-11-04',planet:'aurora'},
- {label:'GloveGate go/no-go',date:'2027-01-31',planet:'glovegate'},
- {label:'TurnBot non-provisional',date:'2027-03-31',planet:'turnbot'},
-];
-
-const BRIEF_DEFAULT={date:'2026-09-25',headline:'Three days to the RV Buddy ask. Send it before anything else.',items:[
- {planet:'jops',text:'Send the RV Buddy intro request. The Gmail draft is ready; ask for three park operators by name.'},
- {planet:'entity',text:'Decide this week on filing McLain Systems ($300). NSF, Valet Trash and Seawall all need it.'},
- {planet:'vaultos',text:'Approve the VaultOS fix plan in Lovable. It takes one click.'},
- {planet:'glovegate',text:'Before anything about GloveGate goes public: read your employment agreement, then file the $65 provisional.'},
-]};
+function validSystemState(x){
+  return !!x&&typeof x==='object'&&!Array.isArray(x)&&Array.isArray(x.ventures)&&Array.isArray(x.comets)&&Array.isArray(x.prospects)&&Array.isArray(x.deadlines)&&x.brief&&typeof x.brief==='object';
+}
+function applySystemState(x,meta){
+  if(!validSystemState(x))return false;
+  VENTURES=x.ventures;
+  COMETS=x.comets;
+  PROSPECTS=x.prospects;
+  DEADLINES=x.deadlines;
+  BRIEF_DEFAULT=x.brief;
+  if(x.weights&&typeof x.weights==='object'){
+    const n={};let ok=true;
+    AXES.forEach(a=>{const v=Number(x.weights[a.k]);if(!Number.isFinite(v)||v<0||v>2)ok=false;else n[a.k]=Math.round(v*10)/10;});
+    if(ok){W_DEFAULT=n;W=Object.assign({},n);}
+  }
+  if(meta)SERVER_STATE=Object.assign({},SERVER_STATE,meta);
+  return true;
+}
+function readStateCache(){try{const raw=localStorage.getItem(STATE_CACHE_KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}}
+function writeStateCache(x){try{localStorage.setItem(STATE_CACHE_KEY,JSON.stringify(x));return true;}catch(e){return false;}}
+async function hydrateSystemState(){
+  if(window.claude){
+    const cached=readStateCache();
+    if(cached&&validSystemState(cached.state||cached))applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+    return;
+  }
+  try{
+    const r=await fetch('/api/state',{cache:'no-store',headers:{accept:'application/json'}});
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d&&validSystemState(d.state)){
+      applySystemState(d.state,{available:true,version:Number(d.version)||1,source:'server',updatedAt:d.updated_at||null});
+      writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state});
+      return;
+    }
+  }catch(e){}
+  const cached=readStateCache();
+  if(cached&&validSystemState(cached.state||cached))applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+}
+async function postSystemState(action,payload){
+  const body=Object.assign({action,expectedVersion:SERVER_STATE.version},payload||{});
+  const r=await fetch('/api/state',{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>null);
+  if(r.status===409){
+    SERVER_STATE.available=false;
+    await hydrateSystemState();
+    const e=new Error('version_conflict');e.code='version_conflict';throw e;
+  }
+  if(!r.ok||!d||!d.state){const e=new Error((d&&d.error)||'state_write_failed');e.code=(d&&d.error)||'state_write_failed';throw e;}
+  applySystemState(d.state,{available:true,version:Number(d.version)||SERVER_STATE.version,source:'server',updatedAt:d.updated_at||null});
+  writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state});
+  return d;
+}
 
 /* ================= dates + scoring ================= */
 function dayDiff(iso){const p=iso.split('-').map(Number);const a=new Date(p[0],p[1]-1,p[2]);const t=new Date();const b=new Date(t.getFullYear(),t.getMonth(),t.getDate());return Math.round((a-b)/86400000);}
@@ -794,29 +720,44 @@ function recompute(){
   if(panelId&&panelId!=='sun'){const v=byId(panelId);const pg=$('#pg');if(v&&pg)pg.textContent=v._g;}
 }
 
-/* ---------- saving weights: shared db in Claude, this device otherwise ---------- */
+/* ---------- saving weights: private server first, Claude DB second, device fallback ---------- */
 const LOCAL_KEY='mclain-system.weights';
 function readLocal(){try{const v=localStorage.getItem(LOCAL_KEY);return v?JSON.parse(v):null;}catch(e){return null;}}
 function writeLocal(){try{const d={};AXES.forEach(a=>d[a.k]=W[a.k]);localStorage.setItem(LOCAL_KEY,JSON.stringify(d));return true;}catch(e){return false;}}
 let db=null,saving=false,pendingSave=false,saveTimer=null,localDirty=false;
 function setSave(t){const el=$('#savestate');if(el)el.textContent=t;}
-function scheduleSave(){clearTimeout(saveTimer);setSave(db?'Saving soon…':'Changed on this screen');saveTimer=setTimeout(saveWeights,800);}
+function scheduleSave(){clearTimeout(saveTimer);setSave(SERVER_STATE.available?'Saving to the System…':(db?'Saving soon…':'Changed on this screen'));saveTimer=setTimeout(saveWeights,700);}
 async function saveWeights(){
   saveTimer=null;
-  if(!db){setSave(writeLocal()?'Saved on this device':'Changed on this screen only');localDirty=false;return;}
   if(saving){pendingSave=true;return;}
   saving=true;setSave('Saving…');
-  try{const d={updatedAt:Date.now()};AXES.forEach(a=>d[a.k]=W[a.k]);await db.doc('engine/weights').set(d);setSave('Saved to the System');}
-  catch(e){setSave(e&&e.code==='invalid_argument'?'You can view these weights but not save them.':'Couldn’t save just now ('+esc(e&&e.code||'error')+'). Your changes still apply here.');}
+  try{
+    const d={};AXES.forEach(a=>d[a.k]=W[a.k]);
+    if(SERVER_STATE.available&&!window.claude){
+      const res=await postSystemState('weights',{weights:d,actor:'web'});
+      setSave('System state v'+res.version+' · synced');
+      localDirty=false;
+    }else if(db){
+      await db.doc('engine/weights').set(Object.assign({updatedAt:Date.now()},d));
+      setSave('Saved to the System');
+      localDirty=false;
+    }else{
+      setSave(writeLocal()?'Saved on this device':'Changed on this screen only');
+      localDirty=false;
+    }
+  }catch(e){
+    if(e&&e.code==='version_conflict')setSave('State changed elsewhere · refreshed');
+    else setSave('Couldn’t sync just now · your changes still apply here');
+  }
   saving=false;
-  if(pendingSave){pendingSave=false;saveWeights();}else localDirty=false;
+  if(pendingSave){pendingSave=false;saveWeights();}
 }
 function applyRemoteWeights(d){
   if(!d||localDirty||saveTimer)return;
   let changed=false;
   AXES.forEach(a=>{const n=Number(d[a.k]);if(Number.isFinite(n)&&n>=0&&n<=2&&Math.abs(n-W[a.k])>1e-9){W[a.k]=Math.round(n*10)/10;changed=true;}});
   if(changed){syncSliders();recompute();}
-  setSave('Saved to the System');
+  setSave(SERVER_STATE.available?'System state v'+SERVER_STATE.version+' · synced':'Saved to the System');
 }
 
 /* ================= ask ================= */
@@ -1300,23 +1241,39 @@ function initCosmos(){
 
 /* ================= db ================= */
 async function initDb(){
+  if(SERVER_STATE.available&&!window.claude){
+    setSave('System state v'+SERVER_STATE.version+' · synced');
+    renderBriefing(BRIEF_DEFAULT,'· synced');
+    return;
+  }
   db=await use('db');
-  if(!db){const saved=readLocal();if(saved)applyRemoteWeights(saved);setSave(saved?'Saved on this device':'Default weights · changes save on this device');renderBriefing(BRIEF_DEFAULT,'');return;}
+  if(!db){
+    const saved=readLocal();
+    if(saved&&SERVER_STATE.source!=='device-cache')applyRemoteWeights(saved);
+    setSave(SERVER_STATE.source==='device-cache'?'Private state · device cache':(saved?'Saved on this device':'Default weights · changes save on this device'));
+    renderBriefing(BRIEF_DEFAULT,SERVER_STATE.source==='device-cache'?'· device cache':'');
+    return;
+  }
   setSave('Loading your saved weights…');
   try{db.doc('engine/weights').onSnapshot(s=>{if(!s.exists){setSave('Default weights');return;}if(s.metadata&&s.metadata.hasPendingWrites)return;applyRemoteWeights(s.data());},e=>{setSave('Saved weights unavailable ('+esc(e&&e.code||'error')+')');});}catch(e){setSave('Saved weights unavailable');}
   try{db.doc('briefing/today').onSnapshot(s=>{if(s.exists)renderBriefing(s.data(),'· from the System');else renderBriefing(BRIEF_DEFAULT,'');},()=>renderBriefing(BRIEF_DEFAULT,''));}catch(e){renderBriefing(BRIEF_DEFAULT,'');}
 }
 
 /* ================= boot ================= */
-rankNow();
-renderDeadlines();
-renderBriefing(BRIEF_DEFAULT,'');
-buildWeights();
-renderRanking();
-renderComets();
-initFreedom();
-initStill();
-try{cosmos=initCosmos();}catch(e){console.error(e);const f=$('#glfail');f.hidden=false;f.textContent='The 3D map couldn’t start here. The ranking below still shows every planet.';$('#gl').hidden=true;}
-initDb();initAsk();initFeeds();initDownloads();
+async function boot(){
+  await hydrateSystemState();
+  rankNow();
+  renderDeadlines();
+  renderBriefing(BRIEF_DEFAULT,SERVER_STATE.source==='server'?'· synced':SERVER_STATE.source==='device-cache'?'· device cache':'');
+  buildWeights();
+  renderRanking();
+  renderComets();
+  initFreedom();
+  initStill();
+  try{cosmos=initCosmos();}catch(e){console.error(e);const f=$('#glfail');f.hidden=false;f.textContent='The 3D map couldn’t start here. The ranking below still shows every planet.';$('#gl').hidden=true;}
+  await initDb();
+  initAsk();initFeeds();initDownloads();
+}
+boot();
 })();
 </script>

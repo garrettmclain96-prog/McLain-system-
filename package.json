@@ -1,13 +1,15 @@
 {
   "name": "mclain-system",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "A 3D map of Garrett McLain's ventures orbiting Zachary, with a Gravity Engine that decides where the week's energy goes.",
+  "description": "Private venture operating system and execution control plane.",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
     "serve": "python3 -m http.server 8000",
-    "icons": "node scripts/icons.cjs"
+    "icons": "node scripts/icons.cjs",
+    "check": "node scripts/check.mjs",
+    "test": "npm run build && npm run check"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
