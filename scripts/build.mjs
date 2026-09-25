@@ -1,7 +1,7 @@
 // Builds the standalone page (index.html) from the Claude artifact source (src/system.html).
 // The artifact source is a page fragment: claude.ai wraps it in <html>/<head>/<body> when it
 // publishes, so this script does the same wrapping for running the page anywhere else.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, mkdirSync, cpSync } from 'node:fs';
 
 const src = readFileSync(new URL('../src/system.html', import.meta.url), 'utf8');
 const titleMatch = src.match(/<title>[\s\S]*?<\/title>/);
@@ -31,3 +31,14 @@ ${body}
 
 writeFileSync(new URL('../index.html', import.meta.url), html);
 console.log(`index.html written (${html.length.toLocaleString()} bytes)`);
+
+// public/ is what Vercel serves: the page and the files it needs, never the source.
+const root = new URL('../', import.meta.url);
+const pub = new URL('../public/', import.meta.url);
+rmSync(pub, { recursive: true, force: true });
+mkdirSync(pub, { recursive: true });
+for (const file of ['index.html', 'login.html', 'manifest.webmanifest', 'robots.txt', 'kit-sheet.png', 'Island_Valet_Trash_Print_Kit.pdf']) {
+  cpSync(new URL(file, root), new URL(file, pub));
+}
+cpSync(new URL('icons/', root), new URL('icons/', pub), { recursive: true });
+console.log('public/ ready');

@@ -2,3 +2,4 @@ node_modules/
 print-kit/out/
 print-kit/_*.html
 .DS_Store
+public/
