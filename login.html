@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The McLain System</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#05070E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="McLain">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+:root{color-scheme:dark;--void:#05070E;--line2:#2A3558;--star:#E9EDF7;--dust:#A4ACC3;--sun:#F4B740;--sunlight:#FFE3A3;--bad:#FF6E7F}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(60% 45% at 50% 38%,rgba(244,183,64,.16),rgba(5,7,14,0) 70%),var(--void);color:var(--star);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+main{width:min(380px,100%);text-align:center}
+.sun{width:88px;height:88px;border-radius:50%;margin:0 auto 22px;background:radial-gradient(circle at 40% 38%,#FFF3D0,#FFB547 45%,#E8641A 80%);box-shadow:0 0 60px 18px rgba(255,170,70,.35)}
+h1{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:44px;line-height:1;margin:0 0 6px}
+h1 em{color:var(--sunlight)}
+p{color:var(--dust);margin:0 0 26px}
+form{display:grid;gap:12px;text-align:left}
+label{font-size:13px;color:var(--dust)}
+input{width:100%;font:inherit;font-size:17px;color:var(--star);background:#0D1326;border:1px solid var(--line2);border-radius:12px;padding:13px 14px}
+input:focus{outline:2px solid var(--sun);outline-offset:1px}
+button{font:inherit;font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px;background:var(--sun);color:#1C1305;cursor:pointer}
+.err{color:var(--bad);font-size:14px;min-height:1.2em;margin:4px 0 0}
+</style>
+</head>
+<body>
+<main>
+  <div class="sun" aria-hidden="true"></div>
+  <h1>The McLain <em>System</em></h1>
+  <p>Private. Enter your password to open it.</p>
+  <form method="post" action="/api/login">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+    <button type="submit">Open the System</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+</main>
+<script>
+if (new URLSearchParams(location.search).has('e')) document.getElementById('err').textContent = 'That password didn’t match. Try again.';
+</script>
+</body>
+</html>

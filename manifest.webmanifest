@@ -1,0 +1,16 @@
+{
+  "name": "The McLain System",
+  "short_name": "McLain",
+  "description": "Fifteen ventures orbiting Zachary, with a Gravity Engine that decides where the week's energy goes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#05070E",
+  "theme_color": "#05070E",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

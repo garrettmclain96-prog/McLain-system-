@@ -1,0 +1,16 @@
+{
+  "name": "mclain-system",
+  "version": "1.1.0",
+  "private": true,
+  "description": "A 3D map of Garrett McLain's ventures orbiting Zachary, with a Gravity Engine that decides where the week's energy goes.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "python3 -m http.server 8000",
+    "icons": "node scripts/icons.cjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "@vercel/functions": "^3.9.9"
+  }
+}
