@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="McLain">
-<!-- Generated from src/system.html by scripts/build.mjs. Edit the source, then run: npm run build -->
+<!-- Generated from src/system.html by scripts/build.mjs. -->
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -277,18 +277,19 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
 
 <main>
   <section id="cosmos" aria-label="The McLain System star map">
-    <canvas id="gl" aria-label="3D star map: fifteen ventures orbiting Zachary"></canvas>
+    <canvas id="gl" aria-label="3D venture priority map"></canvas>
     <div class="labels" id="labels"></div>
     <p id="glfail" hidden></p>
     <div class="hud brand">
-      <div class="eyebrow" id="today">Garrett McLain</div>
+      <div class="eyebrow" id="today">McLain System</div>
       <h1>The McLain <em>System</em></h1>
-      <p>Fifteen ventures, one sun. Each planet’s orbit is set by the Gravity Engine: the closer it sits to Zachary, the more of this week it deserves.</p>
+      <p id="hero-copy">Your ventures, one control plane. The Gravity Engine turns current state into a visible priority order.</p>
     </div>
     <div class="hud hud-tr">
-      <button class="btn" id="golive" type="button"><span class="dot" id="livedot"></span><span id="livetxt">Go live</span></button>
-      <span class="sub" id="livesub">5 connectors · on your own accounts</span>
+      <span class="sub" id="syncstate">Checking private state…</span>
+      <button class="btn" id="syncbtn" type="button">Reload state</button>
       <button class="btn" id="homebtn" type="button" hidden>Back to the whole system</button>
+      <form action="/api/logout" method="post" style="display:inline"><button class="btn" type="submit">Sign out</button></form>
     </div>
     <div class="hud hud-bot">
       <div class="dl-strip" id="dlstrip" aria-label="Deadlines"></div>
@@ -338,69 +339,30 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
           <section class="ans" id="ans-gpt" hidden><div class="ans-h">ChatGPT</div><div class="askout" id="gptout" aria-live="polite"></div><p class="note" id="gptnote"></p></section>
         </div>
       </div>
-      <p class="note" id="askoff" hidden>Asking the System works when you open it in Claude: <a href="https://claude.ai/artifact/SanF9unpxFR8EjK7qiWPh5" target="_blank" rel="noopener">open the live System</a>. Everything else on this page still works here.</p>
+      <p class="note" id="askoff" hidden>The configured AI route is unavailable in this environment. The rest of the System remains usable.</p>
     </div>
   </section>
 
   <section class="band" id="built">
     <div class="wrap">
-      <div class="eyebrow">Built today · September 25, 2026</div>
-      <h2 class="sec">New things in orbit</h2>
-      <p class="lede">What the connectors and AI builders made for your planets today, with each one’s real status. Nothing here is marked done unless it was checked.</p>
+      <div class="eyebrow">Control plane</div>
+      <h2 class="sec">One state. One history. One next move.</h2>
+      <p class="lede">The visual map is only the interface. The operating state lives behind authentication, keeps versions, and records changes so projects can be driven by events instead of source edits.</p>
       <div class="built">
-        <article class="card wide">
-          <div class="meta"><span>Island Valet Trash · print kit</span><span class="state ok">Ready to print</span></div>
-          <img class="sheet" src="kit-sheet.png" alt="Island Valet Trash print kit: door hanger front and back, flyer with tear-off tabs, 11 by 17 front-office sign, and business card front and back, in navy, sea glass and sand">
-          <p>Six print-ready pieces in one PDF: door hanger front and back (4.25 × 11 in), a flyer with tear-off tabs (8.5 × 11), an 11 × 17 front-office sign, and a business card front and back. The magenta dashed line on the hanger is the die cut, not ink. The back of the hanger lists what stays out of the bag, taken from Aurora’s Hazard Codex: propane cylinders, lithium batteries, fuel, lead-acid batteries, hot coals, sharps.</p>
-          <p>The sign-up number on every piece is the resort’s main line, 409-632-0200. Use it only after the front office agrees to take sign-ups.</p>
-          <div class="acts"><button class="btn primary" id="savekit" type="button" hidden>Save the print PDF</button><a class="btn primary" id="kitlink" href="Island_Valet_Trash_Print_Kit.pdf" download hidden>Download the print PDF</a><span class="note" id="savenote" style="margin:0"></span></div>
+        <article class="card">
+          <div class="meta"><span>Canonical state</span><span class="state" id="state-pill">Checking</span></div>
+          <h3 id="state-version">Loading state…</h3>
+          <p id="state-copy">Checking the private control plane.</p>
         </article>
         <article class="card">
-          <div class="meta"><span>Seawall Turnover Co. · v0</span><span class="state ok">Built, not deployed</span></div>
-          <h3>Marketing site with a booking form</h3>
-          <p>“Checkout at 10. Five-star ready by 3.” A one-page site for Galveston hosts: turnover checklist, photo-report promise, three-step process, and a booking-request form. v0 ran a production build and a phone-size check.</p>
-          <p>I didn’t deploy it: the form doesn’t send anywhere yet, so going live now would lose real requests.</p>
-          <div class="acts"><a class="btn" href="https://v0.app/chat/hC83cXDDP7e" target="_blank" rel="noopener">Open in v0</a></div>
+          <div class="meta"><span>Resilience</span><span class="state ok">Fail-safe</span></div>
+          <h3>Private server → device cache → safe shell</h3>
+          <p>The application can keep working through a backend interruption without publishing operating data in source control.</p>
         </article>
         <article class="card">
-          <div class="meta"><span>VaultOS · Lovable</span><span class="state wait">Needs your approval</span></div>
-          <h3>Why your files scatter</h3>
-          <ul>
-            <li>78 projects for 323 files, and 700 tags with near-duplicates like “appraisal” and “appraisals”.</li>
-            <li>182 finished files have no project. Part of that is a race condition: two files proposing the same new project at once, and the second one silently loses it.</li>
-            <li>Re-analysing a file overwrites a category you locked by hand.</li>
-          </ul>
-          <p>The fix plan is written. Lovable changes no code until you approve it.</p>
-          <div class="acts"><a class="btn" href="https://lovable.dev/projects/4a3c079e-c4e4-4970-be6e-5d7cd45df2f1" target="_blank" rel="noopener">Review the plan</a></div>
-        </article>
-        <article class="card">
-          <div class="meta"><span>STILL STANDING · Descript</span><span class="state wait">Editing</span></div>
-          <h3>40-second teaser</h3>
-          <p>Descript’s editing agent, Underlord, is cutting a 16:9 teaser from the key art and stock footage. It isn’t published yet; the Mission Feed below shows the moment a share link appears.</p>
-          <div class="acts"><a class="btn" href="https://web.descript.com/849b2d36-4c69-41fd-8578-13ed9584bb7e" target="_blank" rel="noopener">Open in Descript</a><a class="btn" href="#still">Read the opening</a></div>
-        </article>
-        <article class="card">
-          <div class="meta"><span>Aurora · code</span><span class="state ok">Shipped</span></div>
-          <h3>The Hazard Codex</h3>
-          <p>Ten safety protocols Aurora now applies to every case, each with a stop line and ICD-10 injury codes. 12 of 12 detection tests pass. Its preview deployment is live on Vercel; the feed below tracks it.</p>
-          <div class="acts"><a class="btn" href="https://github.com/garrettmclain96-prog/Aurora-core-beta/tree/claude/multi-connector-showcase-tn2t2l" target="_blank" rel="noopener">See the branch</a></div>
-        </article>
-        <article class="card">
-          <div class="meta"><span>Island Valet Trash · Base44</span><span class="state wait">Check before sharing</span></div>
-          <h3>Sign-up app</h3>
-          <p>Base44 created the Island Valet Trash app. I couldn’t open its preview from here because this connection isn’t allowed to fetch preview links, so look it over in the editor before you show anyone.</p>
-          <div class="acts"><a class="btn" href="https://app.base44.com/apps/6ab5fe8595ac16c71112ab68/editor/preview" target="_blank" rel="noopener">Open in Base44</a></div>
-        </article>
-        <article class="card">
-          <div class="meta"><span>GloveGate · Replit</span><span class="state bad">Stalled · check privacy</span></div>
-          <h3>Test bench didn’t build</h3>
-          <p>Replit made an empty workspace but never built the app. The request described GloveGate, so find it in your Replit app list (it’s the newest one) and make sure it’s private, or delete it. Nothing about the mechanism should be public before the provisional is filed.</p>
-        </article>
-        <article class="card">
-          <div class="meta"><span>Mineral rights · research</span><span class="state ok">Verified sources</span></div>
-          <h3>Where the real records are</h3>
-          <p>Official deed records for Nacogdoches and Milam counties are on publicsearch.us. Robertson, Schleicher, Houston, Fannin and Kaufman are on TexasFile. The Railroad Commission map shows wells, but it isn’t a legal record.</p>
-          <div class="acts"><button class="btn" type="button" data-open="mineral">Open the planet</button></div>
+          <div class="meta"><span>Change history</span><span class="state ok">Versioned</span></div>
+          <h3>Snapshots + event journal</h3>
+          <p>Every server-side state mutation advances a version and preserves the prior state for recovery and audit.</p>
         </article>
       </div>
     </div>
@@ -409,8 +371,8 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
   <section class="band" id="comets">
     <div class="wrap">
       <div class="eyebrow">Undiscovered planets</div>
-      <h2 class="sec">Four ideas you haven’t tried yet</h2>
-      <p class="lede">Each one is built from something you already have. They fly through the map as comets. The line under each shows where it would enter the system with your current weights.</p>
+      <h2 class="sec">Ideas waiting outside the active portfolio</h2>
+      <p class="lede">Candidate ventures stay separate from active work until you choose to adopt them. Their current gravity shows where they would enter the portfolio.</p>
       <div class="comets" id="cometlist"></div>
     </div>
   </section>
@@ -419,14 +381,14 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
     <div class="wrap">
       <div class="feedhead">
         <div>
-          <div class="eyebrow">Mission feed</div>
-          <h2 class="sec">Live from your <em>connectors</em></h2>
-          <p class="lede">Pulled from your own accounts each time you open the page, and refreshed while it stays open. Each feed asks for your OK the first time.</p>
+          <div class="eyebrow">Activity ledger</div>
+          <h2 class="sec">What changed in the <em>System</em></h2>
+          <p class="lede">Recent control-plane events. This becomes the common timeline for deployments, leads, revenue, deadlines, completed work, and automated decisions.</p>
         </div>
-        <button class="btn primary" id="golive2" type="button">Go live</button>
+        <button class="btn" id="refreshstate" type="button">Refresh</button>
       </div>
-      <div class="feeds" id="feeds"></div>
-      <p class="note" id="feedoff" hidden>Live feeds run on your own connected accounts when you open the System in Claude: <a href="https://claude.ai/artifact/SanF9unpxFR8EjK7qiWPh5" target="_blank" rel="noopener">open the live System</a>.</p>
+      <div class="feeds" id="events"></div>
+      <p class="note" id="eventnote"></p>
     </div>
   </section>
 
@@ -453,41 +415,15 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
     </div>
   </section>
 
-  <section class="band" id="still">
-    <div class="wrap">
-      <div class="eyebrow">The story behind the system</div>
-      <div class="still">
-        <canvas id="stillc" aria-label="A room filling with water; a single candle flame held above it; a door of light in the far wall"></canvas>
-        <div>
-          <div class="still-title">STILL STANDING</div>
-          <div class="eyebrow" style="margin-bottom:22px">Opening scene · first draft</div>
-          <div class="prose">
-            <p class="first">The water came in under the door the way bad news does: quietly at first, then all at once. By the time he noticed it, it had already found the low corner of the room and filled it, dark and patient, and it was reaching for the next one.</p>
-            <p>He did not look at the water. He looked at the candle.</p>
-            <p>It stood on the only table in the room, a stub of wax no taller than his thumb, and its flame leaned toward him the way a child leans toward the person who has come to pick him up. He had carried it through three moves and a winter without heat. He had shielded it with his hands in parking lots. He knew the exact sound it made before it went out, a small dry tick, and he had learned to hear it through anything.</p>
-            <p>The water reached his ankles. It was warm, which was worse.</p>
-            <p>He picked the candle up and held it against his chest.</p>
-            <p>On the walls hung the things he had built, each in a plain frame: a drawing of a gate, a map with seven counties circled, a hand-lettered sign for a business that did not exist yet. The water climbed toward them without hurry. He saw that the frames stayed dry. The water rose and the frames stayed dry, as if the room had decided which things it was allowed to take.</p>
-            <p>When it reached his knees he said, out loud, to no one, “Not this one.”</p>
-            <p>The flame ticked. He cupped his hand around it and it steadied, and in its light he saw what he had not seen before: a door in the far wall, above the waterline. It had not been there a moment ago. Or it had been there the whole time, waiting for him to stop looking down.</p>
-            <p>He started walking.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  
 
   <footer>
     <div class="wrap">
-      <div class="eyebrow">Sources and notes</div>
+      <div class="eyebrow">McLain System v2</div>
       <ul>
-        <li>USPTO provisional filing fee: $325 large, $130 small, $65 micro entity (37 CFR 1.16(d)). <a href="https://www.uspto.gov/learning-and-resources/fees-and-payment/uspto-fee-schedule" target="_blank" rel="noopener">USPTO fee schedule</a></li>
-        <li>Texas Certificate of Formation for an LLC (Form 205): $300. <a href="https://www.sos.state.tx.us/corp/forms_boc.shtml" target="_blank" rel="noopener">Texas SOS forms</a> · UEI registration at <a href="https://sam.gov/" target="_blank" rel="noopener">SAM.gov</a></li>
-        <li>NSF SBIR/STTR Phase I: up to $275K; the Nov 4, 2026 deadline requires an accepted Project Pitch first. <a href="https://seedfund.nsf.gov/" target="_blank" rel="noopener">NSF America’s Seed Fund</a></li>
-        <li>Park prospects come from the 78-park Gulf Coast list compiled today (52 independent, 33 waterfront). Confirm details before you call.</li>
-        <li>Gravity scores are my estimates from your notes, and they’re meant to be argued with. Move the weights, or ask the System to.</li>
-        <li>Your iPhone app: <a href="https://mclain-system.vercel.app" target="_blank" rel="noopener">mclain-system.vercel.app</a> · authenticated private-state sync enabled on the self-hosted build.</li>
-        <li>Round one, for reference: <a href="https://gamma.app/docs/axda1vt7cmw2azz" target="_blank" rel="noopener">Aurora deck</a> · <a href="https://docs.google.com/document/d/1I2kzsy0VAVcXzvvvpD87ycRgfn71voQlmz1IcN3C--w/edit" target="_blank" rel="noopener">Aurora Genesis field dossier</a></li>
+        <li>Private operating state is loaded only after authentication.</li>
+        <li>Gravity scores are decision inputs, not immutable truth. Change the weights when priorities change.</li>
+        <li>The state API keeps versions, snapshots, and an event journal so future automations have an auditable backbone.</li>
       </ul>
     </div>
   </footer>
@@ -536,6 +472,8 @@ let BRIEF_DEFAULT={date:'',headline:'Private state is not connected. The control
 
 const STATE_CACHE_KEY='mclain-system.state.v2';
 let SERVER_STATE={available:false,version:null,source:'fallback',updatedAt:null};
+let SERVER_EVENTS=[];
+let SYSTEM_META={operatorName:'Operator',sunName:'North Star',sunSubtitle:'the reason',strategyContext:''};
 
 function validSystemState(x){
   return !!x&&typeof x==='object'&&!Array.isArray(x)&&Array.isArray(x.ventures)&&Array.isArray(x.comets)&&Array.isArray(x.prospects)&&Array.isArray(x.deadlines)&&x.brief&&typeof x.brief==='object';
@@ -547,6 +485,7 @@ function applySystemState(x,meta){
   PROSPECTS=x.prospects;
   DEADLINES=x.deadlines;
   BRIEF_DEFAULT=x.brief;
+  if(x.meta&&typeof x.meta==='object')SYSTEM_META=Object.assign({},SYSTEM_META,x.meta);
   if(x.weights&&typeof x.weights==='object'){
     const n={};let ok=true;
     AXES.forEach(a=>{const v=Number(x.weights[a.k]);if(!Number.isFinite(v)||v<0||v>2)ok=false;else n[a.k]=Math.round(v*10)/10;});
@@ -560,33 +499,46 @@ function writeStateCache(x){try{localStorage.setItem(STATE_CACHE_KEY,JSON.string
 async function hydrateSystemState(){
   if(window.claude){
     const cached=readStateCache();
-    if(cached&&validSystemState(cached.state||cached))applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+    if(cached&&validSystemState(cached.state||cached)){
+      SERVER_EVENTS=Array.isArray(cached.events)?cached.events:[];
+      applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+    }
     return;
   }
   try{
     const r=await fetch('/api/state',{cache:'no-store',headers:{accept:'application/json'}});
     const d=await r.json().catch(()=>null);
     if(r.ok&&d&&validSystemState(d.state)){
+      SERVER_EVENTS=Array.isArray(d.events)?d.events:[];
       applySystemState(d.state,{available:true,version:Number(d.version)||1,source:'server',updatedAt:d.updated_at||null});
-      writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state});
+      writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state,events:SERVER_EVENTS});
       return;
     }
   }catch(e){}
   const cached=readStateCache();
-  if(cached&&validSystemState(cached.state||cached))applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+  if(cached&&validSystemState(cached.state||cached)){
+    SERVER_EVENTS=Array.isArray(cached.events)?cached.events:[];
+    applySystemState(cached.state||cached,{available:false,version:cached.version||null,source:'device-cache',updatedAt:cached.updated_at||null});
+  }
 }
 async function postSystemState(action,payload){
-  const body=Object.assign({action,expectedVersion:SERVER_STATE.version},payload||{});
-  const r=await fetch('/api/state',{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json().catch(()=>null);
-  if(r.status===409){
-    SERVER_STATE.available=false;
-    await hydrateSystemState();
-    const e=new Error('version_conflict');e.code='version_conflict';throw e;
+  const send=async expectedVersion=>{
+    const body=Object.assign({action,expectedVersion},payload||{});
+    const r=await fetch('/api/state',{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>null);
+    return {r,d};
+  };
+  let {r,d}=await send(SERVER_STATE.version);
+  if(r.status===409&&d&&Number.isFinite(Number(d.currentVersion))){
+    SERVER_STATE.version=Number(d.currentVersion);
+    ({r,d}=await send(SERVER_STATE.version));
   }
-  if(!r.ok||!d||!d.state){const e=new Error((d&&d.error)||'state_write_failed');e.code=(d&&d.error)||'state_write_failed';throw e;}
-  applySystemState(d.state,{available:true,version:Number(d.version)||SERVER_STATE.version,source:'server',updatedAt:d.updated_at||null});
-  writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state});
+  if(!r.ok||!d||!d.state){
+    const e=new Error((d&&d.error)||'state_write_failed');e.code=(d&&d.error)||'state_write_failed';throw e;
+  }
+  SERVER_STATE=Object.assign({},SERVER_STATE,{available:true,version:Number(d.version)||SERVER_STATE.version,source:'server',updatedAt:d.updated_at||null});
+  const cached=readStateCache();
+  writeStateCache({version:d.version,updated_at:d.updated_at,state:d.state,events:(cached&&cached.events)||SERVER_EVENTS});
   return d;
 }
 
@@ -604,7 +556,12 @@ function money(n){const a=Math.abs(n);if(a>=1e6)return '$'+(n/1e6).toFixed(a>=1e
 function ago(ms){const s=Math.max(0,(Date.now()-ms)/1000);if(s<50)return 'just now';const m=s/60;if(m<60)return Math.round(m)+' min ago';const h=m/60;if(h<24)return Math.round(h)+' h ago';return Math.round(h/24)+' days ago';}
 
 /* ================= header bits ================= */
-$('#today').textContent='Garrett McLain · '+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+function renderIdentity(){
+  const who=SYSTEM_META.operatorName&&SYSTEM_META.operatorName!=='Operator'?SYSTEM_META.operatorName+' · ':'';
+  $('#today').textContent=who+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const hero=$('#hero-copy');
+  if(hero)hero.textContent='Your ventures, one control plane. The Gravity Engine turns current state into a visible priority order around '+SYSTEM_META.sunName+'.';
+}
 function renderDeadlines(){
   const el=$('#dlstrip');el.innerHTML='';
   DEADLINES.forEach(d=>{const n=dayDiff(d.date);const b=document.createElement('button');b.type='button';b.className='chip'+(n<=7?' hot':'');b.innerHTML='<b>'+esc(d.label)+'</b>'+esc(n<0?dueText(n):(n===0?'today':n+'d'));b.title=d.label+' · '+fmtShort(d.date)+' · '+dueText(n);b.addEventListener('click',()=>openPanel(d.planet));el.appendChild(b);});
@@ -644,41 +601,23 @@ function planetPanel(v){
   h+='<div class="p-g"><span class="big" id="pg">'+v._g+'</span><span>gravity</span></div>';
   h+='<p class="p-what">'+esc(v.what)+'</p>';
   if(v.deadline){const n=dayDiff(v.deadline.date);h+='<div class="p-due'+(n<=7?' hot':'')+'">'+esc(v.deadline.label)+' · '+esc(fmtShort(v.deadline.date))+' · '+esc(dueText(n))+'</div>';}
-  if(v.sealed)h+='<div class="sealed">Sealed planet. The design stays off this page, and off every public tool, until a patent filing decision is made. The US gives a 12-month grace period after public disclosure, but Europe, China, Japan and Korea don’t: disclosure there forfeits the rights for good.</div>';
+  if(v.sealed)h+='<div class="sealed">Confidential venture. Keep non-public design details out of public source and external tools until the disclosure strategy is decided.</div>';
   h+='<div class="p-block"><h3>Next move</h3><p class="p-next">'+esc(v.next)+'</p></div>';
   h+=extras(v);
-  h+='<div class="p-block" data-livewrap="'+v.id+'" hidden><h3>Live</h3><div class="p-live" id="plive"></div></div>';
   h+='<div class="p-block"><h3>Why it sits here</h3>'+axisRows(v)+'</div>';
   return h;
 }
 function extras(v){
-  switch(v.id){
-  case 'jops':
-    return '<div class="p-block"><h3>First eight prospects</h3><p style="color:var(--dust);font-size:13px">Independent, on the water, 75+ sites, from the 78-park Gulf Coast list. Confirm details before you call.</p><div class="tbl-wrap"><table class="ptable"><thead><tr><th>Park</th><th>Town</th><th style="text-align:right">Sites</th><th>Phone</th></tr></thead><tbody>'+
-      PROSPECTS.map(p=>'<tr><td><a href="'+esc(p[4])+'" target="_blank" rel="noopener">'+esc(p[0])+'</a></td><td>'+esc(p[1])+'</td><td class="n">'+p[2]+'</td><td class="mono" style="font-size:12px;white-space:nowrap">'+(p[3]?esc(p[3]):'<span style="color:var(--faint)">none listed</span>')+'</td></tr>').join('')+
-      '</tbody></table></div></div><div class="p-block"><h3>Your walk-away lines</h3><ul class="linklist"><li>Cash flowing from month one. No “paid after 12 months.”</li><li>Written terms on payment and on who owns the code.</li><li>No “I own the code now” without a buyout.</li></ul></div>';
-  case 'valet':
-    return '<div class="p-block"><h3>Built today</h3><img class="thumb" src="kit-sheet.png" alt="Island Valet Trash print kit"><ul class="linklist"><li><a href="#built">Print kit: six pieces, one PDF</a></li><li><a href="https://app.base44.com/apps/6ab5fe8595ac16c71112ab68/editor/preview" target="_blank" rel="noopener">Sign-up app in Base44</a><small>Check it in the editor before showing anyone.</small></li></ul></div>';
-  case 'seawall':
-    return '<div class="p-block"><h3>Built today</h3><ul class="linklist"><li><a href="https://v0.app/chat/hC83cXDDP7e" target="_blank" rel="noopener">Seawall Turnover Co. site in v0</a><small>Built and checked by v0. Not deployed until the form sends somewhere.</small></li></ul></div>';
-  case 'vaultos':
-    return '<div class="p-block"><h3>Built today</h3><ul class="linklist"><li><a href="https://lovable.dev/projects/4a3c079e-c4e4-4970-be6e-5d7cd45df2f1" target="_blank" rel="noopener">Fix plan in Lovable</a><small>Waiting for your approval. No code changes until you say go.</small></li></ul></div>';
-  case 'still':
-    return '<div class="p-block"><h3>Built today</h3><ul class="linklist"><li><a href="https://web.descript.com/849b2d36-4c69-41fd-8578-13ed9584bb7e" target="_blank" rel="noopener">Teaser project in Descript</a><small>Being edited by Underlord.</small></li><li><a href="#still">The opening scene</a></li></ul></div>';
-  case 'aurora':
-    return '<div class="p-block"><h3>Built today</h3><ul class="linklist"><li><a href="https://github.com/garrettmclain96-prog/Aurora-core-beta/tree/claude/multi-connector-showcase-tn2t2l" target="_blank" rel="noopener">Hazard Codex branch</a><small>10 protocols, 12/12 detection tests.</small></li><li><a href="https://seedfund.nsf.gov/" target="_blank" rel="noopener">NSF America’s Seed Fund</a></li></ul></div>';
-  case 'glovegate':
-    return '<div class="p-block"><div class="warnbox">Replit’s test-bench workspace never built, and the request described GloveGate. Find it in your Replit app list (the newest one) and confirm it’s private, or delete it.</div></div>';
-  case 'mineral':
-    return '<div class="p-block"><h3>Verification route</h3><ul class="linklist">'+
-      '<li><a href="https://nacogdoches.tx.publicsearch.us/" target="_blank" rel="noopener">Nacogdoches County official records</a><small>Free public search</small></li>'+
-      '<li><a href="https://milam.tx.publicsearch.us/" target="_blank" rel="noopener">Milam County official records</a><small>Free public search</small></li>'+
-      '<li><a href="https://www.texasfile.com/" target="_blank" rel="noopener">TexasFile</a><small>Robertson, Schleicher, Houston, Fannin, Kaufman</small></li>'+
-      '<li><a href="https://gis.rrc.texas.gov/GISViewer/" target="_blank" rel="noopener">Railroad Commission map</a><small>Shows wells and leases. It isn’t a legal record.</small></li></ul></div>';
-  case 'entity':
-    return '<div class="p-block"><h3>Unlocks</h3><div class="pillrow">'+v.unlocks.map(id=>'<button class="pill" type="button" data-open="'+id+'">'+esc(byId(id).name)+'</button>').join('')+'</div></div><div class="p-block"><h3>Where to file</h3><ul class="linklist"><li><a href="https://www.sos.state.tx.us/corp/forms_boc.shtml" target="_blank" rel="noopener">Texas SOS business forms</a><small>Form 205, Certificate of Formation, $300</small></li><li><a href="https://sam.gov/" target="_blank" rel="noopener">SAM.gov</a><small>Free UEI registration</small></li></ul></div>';
-  default: return '';
+  let h='';
+  if(Array.isArray(v.unlocks)&&v.unlocks.length){
+    const buttons=v.unlocks.map(id=>byId(id)).filter(Boolean).map(x=>'<button class="pill" type="button" data-open="'+x.id+'">'+esc(x.name)+'</button>').join('');
+    if(buttons)h+='<div class="p-block"><h3>Unlocks</h3><div class="pillrow">'+buttons+'</div></div>';
   }
+  if(Array.isArray(v.resources)&&v.resources.length){
+    const links=v.resources.filter(x=>x&&x.label&&x.url).map(x=>'<li><a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.label)+'</a>'+(x.note?'<small>'+esc(x.note)+'</small>':'')+'</li>').join('');
+    if(links)h+='<div class="p-block"><h3>Resources</h3><ul class="linklist">'+links+'</ul></div>';
+  }
+  return h;
 }
 function cometPanel(c){
   const g=gravity(c);const pos=RANK.filter(r=>r.g>g).length+1;
@@ -690,11 +629,13 @@ function cometPanel(c){
    '<div class="p-block"><h3>Why now</h3><p>'+esc(c.why)+'</p></div>';
 }
 function sunPanel(){
-  const top=RANK[0].v;
-  return '<div class="p-eyebrow">The sun</div><h2 class="p-title" id="ptitle">Zachary</h2><p class="p-what" style="font-family:var(--serif);font-size:22px;line-height:1.35;color:var(--star)">The reason.</p>'+
-   '<div class="p-block"><p>Every orbit here bends around one person. The Gravity Engine asks the same question of each venture: does it build a steadier life for Zachary, sooner?</p><p>That’s why Stability carries the heaviest default weight ('+W_DEFAULT.stability.toFixed(1)+'×), and why the planet closest in right now is <button class="pill" type="button" data-open="'+top.id+'">'+esc(top.name)+'</button>.</p></div>';
+  const top=RANK[0]&&RANK[0].v;
+  const topButton=top?'<button class="pill" type="button" data-open="'+top.id+'">'+esc(top.name)+'</button>':'the current priority';
+  return '<div class="p-eyebrow">The sun</div><h2 class="p-title" id="ptitle">'+esc(SYSTEM_META.sunName)+'</h2><p class="p-what" style="font-family:var(--serif);font-size:22px;line-height:1.35;color:var(--star)">'+esc(SYSTEM_META.sunSubtitle||'the reason')+'.</p>'+
+   '<div class="p-block"><p>The center of the map is the reason the portfolio exists. Stability carries the heaviest default weight ('+W_DEFAULT.stability.toFixed(1)+'×), and the closest active priority right now is '+topButton+'.</p></div>';
 }
-function wirePanel(){renderPanelLive();}
+function wirePanel(){}
+
 
 /* ================= briefing ================= */
 function renderBriefing(b,src){
@@ -776,17 +717,16 @@ function applyRemoteWeights(d){
 }
 
 /* ================= ask ================= */
-const SUGG=['What should I do with the next 7 days?','If I only had $400 this month, where should it go?','Draft my RV Buddy ask in three sentences.','Weight it for cash this month. What changes?'];
+const SUGG=['What should I do with the next 7 days?','What is blocking the top three priorities?','Weight this month for cash. What changes?','Which project has the best path to recurring revenue?'];
 function buildPrompt(q,withTools){
   const lines=RANK.map((r,i)=>{const v=r.v;const dl=v.deadline?' | deadline '+v.deadline.date+' ('+v.deadline.label+', '+dueText(dayDiff(v.deadline.date))+')':'';
     return (i+1)+'. '+v.name+' [id '+v.id+'] gravity '+r.g+'/100 | '+v.tag+' | speed '+v.s.speed+', cash '+v.s.cash+', stability '+v.s.stability+', meaning '+v.s.meaning+', blockers '+v.s.blockers+dl+'\n   What: '+v.what+'\n   Next move: '+v.next;}).join('\n');
   const comets=COMETS.map(c=>'- '+c.name+' [id '+c.id+']: '+c.pitch+' First dollar: '+c.first).join('\n');
-  return 'You are the strategy engine inside "The McLain System", Garrett McLain\'s live map of his ventures. Today is '+new Date().toDateString()+'.\n\n'+
-   'Standing rule: demonstrated stability and steady, predictable income come first. Weigh every recommendation against that before upside. Garrett works a day job at an RV resort on Galveston Island and has no business entity yet.\n\n'+
-   'Rules for your answer:\n- Be direct. Give one recommendation, not a survey of options.\n- Use only the facts below. Never invent prices, phone numbers, names or dates; if something is unknown, say so briefly.\n- Never describe how GloveGate or AquaStep work. Their designs are confidential until a filing decision is made.\n- Under 180 words unless he asks for more. Short paragraphs or a short list. Plain text, no headings, no markdown symbols.\n'+
-   (withTools?'- You can call set_weights to re-tune the Gravity Engine when he asks for a different emphasis, and focus_planet to show him the venture you recommend.\n':'')+
-   '\nGravity Engine weights (0 to 2): '+AXES.map(a=>a.k+' '+W[a.k].toFixed(1)).join(', ')+'. Gravity is the weighted sum of the 1-5 scores minus blocker drag, scaled 0-100. Deadline scores come from the real dates.\n\n'+
-   'Ventures, highest gravity first:\n'+lines+'\n\nIdea comets not yet adopted:\n'+comets+'\n\nGarrett asks: '+q;
+  const context=SYSTEM_META.strategyContext?'\nPrivate operating context: '+SYSTEM_META.strategyContext+'\n':'';
+  return 'You are the strategy engine inside The McLain System. Today is '+new Date().toDateString()+'.\n'+context+'\n'+
+   'Rules for your answer:\n- Prioritize demonstrated stability, predictable income, leverage, and executable next actions.\n- Be direct. Give a recommendation, not a vague survey.\n- Use only the state below. Never invent prices, people, dates, or status.\n- Treat ventures marked confidential as sealed; do not infer or expose their design details.\n- Under 220 words unless asked for more.\n'+
+   (withTools?'- You may re-tune the Gravity Engine with set_weights and focus the map with focus_planet when useful.\n':'')+
+   '\nGravity Engine weights (0 to 2): '+AXES.map(a=>a.k+' '+W[a.k].toFixed(1)).join(', ')+'.\n\nActive ventures:\n'+lines+'\n\nCandidate ventures:\n'+comets+'\n\nQuestion: '+q;
 }
 const TOOLS=[
  {name:'set_weights',description:'Re-tune the Gravity Engine on the page. Pass any of speed, cash, stability, deadline, meaning, blockers as numbers from 0 to 2. Returns the new top five ventures with gravity scores.',
@@ -870,126 +810,69 @@ async function initAsk(){
   q.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();run();}});
 }
 
-/* ================= live feeds (mcp) ================= */
-const FEEDS=[
- {key:'memory',server:'Vertiso Memory',tool:'list_actions',input:{work:'open',sort:'due_date',limit:12},every:600000,title:'Open actions',sub:'Vertiso Memory · your to-dos',big:true},
- {key:'vercel',server:'Vercel',tool:'list_deployments',input:{projectId:'prj_9dUHR4SFGqxOonE7qSfo0xg6y10K',teamId:'team_LbretlYnAQEwAtom6VCSiyJu',limit:3},every:300000,title:'Aurora deploys',sub:'Vercel · aurora-core-beta',planet:'aurora'},
- {key:'lovable',server:'Lovable',tool:'get_project',input:{project_id:'4a3c079e-c4e4-4970-be6e-5d7cd45df2f1'},every:300000,title:'VaultOS',sub:'Lovable · project status',planet:'vaultos'},
- {key:'descript',server:'Descript',tool:'get_project',input:{project_id:'849b2d36-4c69-41fd-8578-13ed9584bb7e'},every:300000,title:'STILL STANDING teaser',sub:'Descript · project',planet:'still'},
- {key:'quote',server:'Twelve Data',tool:'get_quote',input:{symbol:'THO'},every:600000,title:'RV market pulse',sub:'Twelve Data · Thor Industries (THO)',planet:'aurora'},
-];
-const FS={};FEEDS.forEach(f=>FS[f.key]={data:null,at:0,err:null,unsub:null,state:'idle'});
-const AUTHZ=['needs_reauth','server_not_connected','selection_required','blocked_by_policy','approval_required','not_in_manifest','consent_required','not_granted','capability_disabled','capability_removed','server_not_found'];
-function errCopy(f,e){const c=e&&e.code,s=f.server;
-  switch(c){
-   case 'needs_reauth':return 'Reconnect '+s+' in claude.ai Settings → Connectors.';
-   case 'server_not_connected':return 'Add '+s+' in claude.ai Settings → Connectors to see this.';
-   case 'selection_required':return 'You have more than one '+s+' connector. Pick one when claude.ai asks.';
-   case 'not_in_manifest':case 'consent_required':return s+' is turned off for this page.';
-   case 'blocked_by_policy':case 'approval_required':return 'Your organization blocks this '+s+' tool here.';
-   case 'server_unavailable':case 'upstream_error':case 'rate_limited':return s+' didn’t answer. It will try again on the next refresh.';
-   case 'tool_error':return s+' reported a problem: '+(e.message||'no details');
-   case 'not_granted':case 'capability_disabled':case 'capability_removed':return 'Live feeds aren’t available in this view.';
-   case 'server_not_found':return 'That '+s+' connection no longer exists.';
-   default:return s+' failed ('+(c||'unknown')+').';}
+/* ================= event ledger ================= */
+function eventLabel(e){
+  return String(e&&e.event_type||'event').replaceAll('.',' · ');
 }
-function vercelList(p){const a=p&&p.result&&p.result.deployments&&p.result.deployments.deployments||p&&p.deployments&&p.deployments.deployments||p&&p.deployments||[];return Array.isArray(a)?a:[];}
-function parseQuote(p){const s=typeof p==='string'?p:(p&&typeof p.result==='string'?p.result:null);if(!s)return (p&&typeof p==='object'&&p.symbol)?p:null;const rows=s.trim().split('\n');if(rows.length<2)return null;const k=rows[0].split(';'),v=rows[1].split(';');const o={};k.forEach((x,i)=>o[x]=v[i]);return o;}
-function stateCls(s){s=String(s||'').toUpperCase();return s==='READY'?'ok':(s==='ERROR'||s==='CANCELED')?'bad':'wait';}
-function feedBody(f){
-  const st=FS[f.key],p=st.data;
-  if(!p)return '';
-  if(f.key==='memory'){
-    const rows=(Array.isArray(p.data)?p.data:[]).slice().sort((a,b)=>{const da=a.due_date||'9999',db2=b.due_date||'9999';return da<db2?-1:da>db2?1:0;}).slice(0,8);
-    if(!rows.length)return '<p>No open actions.</p>';
-    return '<ul class="alist">'+rows.map(r=>{const d=typeof r.due_date==='string'&&/^\d{4}-\d{2}-\d{2}/.test(r.due_date)?dayDiff(r.due_date.slice(0,10)):null;
-      return '<li><span>'+esc(r.title||r.action||'Untitled')+(r.memory_title?'<small>'+esc(r.memory_title)+'</small>':'')+'</span><span class="due'+(d!=null&&d<0?' over':d!=null&&d<=7?' soon':'')+'">'+(d==null?'no date':esc(dueText(d)))+'</span></li>';}).join('')+'</ul>'+(p.total?'<p class="note" style="margin-top:6px">'+Number(p.total)+' open in total</p>':'');
+function renderSystemStatus(){
+  const pill=$('#state-pill'),version=$('#state-version'),copy=$('#state-copy'),sync=$('#syncstate');
+  if(!pill||!version||!copy)return;
+  if(SERVER_STATE.available){
+    pill.className='state ok';pill.textContent='Synced';
+    version.textContent='State v'+SERVER_STATE.version;
+    copy.textContent='Canonical private state is connected'+(SERVER_STATE.updatedAt?' · updated '+ago(new Date(SERVER_STATE.updatedAt).getTime()):'.');
+    if(sync)sync.textContent='Private state · v'+SERVER_STATE.version;
+  }else if(SERVER_STATE.source==='device-cache'){
+    pill.className='state wait';pill.textContent='Cached';
+    version.textContent='Device cache';
+    copy.textContent='The server is unavailable; the last authenticated state is being used on this device.';
+    if(sync)sync.textContent='Private state · cached';
+  }else{
+    pill.className='state bad';pill.textContent='Fallback';
+    version.textContent='Safe shell';
+    copy.textContent='No private state is available. The public fallback contains no operating portfolio data.';
+    if(sync)sync.textContent='Private state unavailable';
   }
-  if(f.key==='vercel'){
-    const list=vercelList(p);if(!list.length)return '<p>No deployments found.</p>';
-    return list.slice(0,3).map(d=>{const m=d.meta||{};const msg=String(m.githubCommitMessage||'').split('\n')[0];
-      return '<div style="padding:6px 0;border-bottom:1px solid var(--line)"><span class="state '+stateCls(d.state)+'">'+esc(d.state||'unknown')+'</span> <span class="mono" style="font-size:12px;color:var(--faint)">'+esc(d.target==='production'?'production':'preview')+' · '+(d.created?esc(ago(d.created)):'')+'</span><div style="color:var(--star);margin-top:4px">'+esc(msg||'(no commit message)')+'</div><div class="mono" style="font-size:11.5px;color:var(--faint)">'+esc(m.githubCommitRef||'')+'</div>'+(d.inspectorUrl?'<a href="'+esc(d.inspectorUrl)+'" target="_blank" rel="noopener" style="font-size:12.5px">Open in Vercel</a>':'')+'</div>';}).join('');
-  }
-  if(f.key==='lovable'){
-    const pr=p.project||{};const busy=pr.agentFinished===false;
-    return '<div class="kv"><span>Status</span><span>'+esc(busy?'Agent working or waiting on you':'Idle')+'</span><span>Published</span><span>'+(p.is_published?'Yes':'No')+'</span><span>Last edit</span><span>'+(p.last_edited_at?esc(ago(Date.parse(p.last_edited_at))):'unknown')+'</span></div>'+(p.editor_url?'<a href="'+esc(p.editor_url)+'" target="_blank" rel="noopener" style="font-size:13px">Open in Lovable</a>':'');
-  }
-  if(f.key==='descript'){
-    const comp=Array.isArray(p.compositions)&&p.compositions[0];const pubs=Array.isArray(p.publishes)?p.publishes:[];const share=pubs.find(x=>x&&x.share_url);
-    return '<div class="kv"><span>Cut</span><span>'+(comp?esc(comp.name||'Composition')+(comp.duration?' · '+Math.round(comp.duration)+' s':''):'none yet')+'</span><span>Updated</span><span>'+(p.updated_at?esc(ago(Date.parse(p.updated_at))):'unknown')+'</span><span>Share link</span><span>'+(share?'<a href="'+esc(share.share_url)+'" target="_blank" rel="noopener">Watch the teaser</a>':'Not published yet')+'</span></div>';
-  }
-  if(f.key==='quote'){
-    const q=parseQuote(p);if(!q)return '<p>No quote came back.</p>';
-    const close=Number(q.close),pc=Number(q.percent_change),hi=Number(q.fifty_two_week_high),off=Number(q.fifty_two_week_high_change_percent);
-    return '<div class="bignum">$'+(Number.isFinite(close)?close.toFixed(2):'—')+' <span style="font-size:14px;color:'+(pc<0?'var(--bad)':'var(--ok)')+'">'+(Number.isFinite(pc)?(pc>0?'+':'')+pc.toFixed(2)+'%':'')+'</span></div>'+
-      '<p style="margin:4px 0 0">'+(Number.isFinite(off)?esc(Math.abs(off).toFixed(0))+'% below its 52-week high of $'+(Number.isFinite(hi)?hi.toFixed(2):'—')+'.':'')+' RV makers near their lows fits the case for Aurora: owners are repairing the rigs they have instead of buying new ones.</p><p class="note" style="margin-top:6px">'+(q.datetime?'Close of '+esc(q.datetime)+'. ':'')+'Market context, not investment advice.</p>';
-  }
-  return '';
 }
-function renderFeeds(){
-  $('#feeds').innerHTML=FEEDS.map(f=>{const st=FS[f.key];
-    let body;
-    if(st.data)body=feedBody(f);
-    else if(st.err)body='';
-    else if(st.state==='loading')body='<p class="note" style="margin:0">Connecting to '+esc(f.server)+'…</p>';
-    else body='<p class="note" style="margin:0">Not connected yet. Press Go live to pull this from your '+esc(f.server)+' account.</p>';
-    const dot=st.data&&!st.err?'on':st.err?(AUTHZ.includes(st.err.code)?'bad':'warn'):'';
-    return '<article class="fcard'+(f.big?' big':'')+'"><div class="fh"><div><h3>'+esc(f.title)+'</h3><div class="fs">'+esc(f.sub)+'</div></div><span class="dot '+dot+'"></span></div><div class="fb">'+body+(st.err?'<p class="err">'+esc(errCopy(f,st.err))+'</p>':'')+'</div>'+(st.at?'<div class="ff">Updated '+esc(ago(st.at))+'</div>':'')+'</article>';}).join('');
-  const liveN=FEEDS.filter(f=>FS[f.key].data&&!FS[f.key].err).length;
-  $('#livedot').className='dot'+(liveN?' on':'');
-  $('#livetxt').textContent=liveN?'Live · '+liveN+' of '+FEEDS.length+' feeds':'Go live';
-  $('#golive2').textContent=liveN?'Refresh':'Go live';
-  if(cosmos)cosmos.setLive(new Set(FEEDS.filter(f=>f.planet&&FS[f.key].data&&!FS[f.key].err).map(f=>f.planet)));
-  renderPanelLive();
+function renderEvents(){
+  const el=$('#events'),note=$('#eventnote');
+  if(!el)return;
+  const rows=SERVER_EVENTS.slice(0,24);
+  if(!rows.length){
+    el.innerHTML='<article class="fcard big"><div class="fb"><p>No control-plane events are available in this view yet.</p></div></article>';
+    if(note)note.textContent=SERVER_STATE.available?'The ledger is connected; new mutations will appear here.':'Connect private state to load the ledger.';
+    return;
+  }
+  el.innerHTML=rows.map(e=>{
+    const v=e.venture_id&&byId(String(e.venture_id));
+    const when=e.created_at?ago(new Date(e.created_at).getTime()):'';
+    return '<article class="fcard"><div class="fh"><div><h3>'+esc(eventLabel(e))+'</h3><div class="fs">'+esc(v?v.name:(e.source||'system'))+'</div></div><span class="dot on"></span></div><div class="ff">'+esc(when)+'</div></article>';
+  }).join('');
+  if(note)note.textContent='Showing the latest '+rows.length+' events from the private journal.';
 }
-function renderPanelLive(){
-  if(!panelId)return;const wrap=document.querySelector('[data-livewrap="'+panelId+'"]');if(!wrap)return;
-  const fs=FEEDS.filter(f=>f.planet===panelId&&FS[f.key].data);
-  wrap.hidden=!fs.length;
-  const el=$('#plive');if(el)el.innerHTML=fs.map(f=>'<div class="livecard"><div class="lh"><span>'+esc(f.sub)+'</span><span>'+esc(ago(FS[f.key].at))+'</span></div>'+feedBody(f)+'</div>').join('');
-}
-let MCP=null;
-function startFeed(f){
-  const st=FS[f.key];if(st.unsub||!MCP)return;
-  st.state='loading';
+async function refreshLedger(){
+  if(window.claude)return;
+  const btn=$('#refreshstate');if(btn)btn.disabled=true;
   try{
-    st.unsub=MCP.watchTool(f.server,f.tool,f.input,ev=>{
-      if(ev.type==='data'){const r=ev.result||{};st.data=r.payload!==undefined?r.payload:r;st.at=(r.cache&&r.cache.storedAt)||Date.now();st.err=null;st.state='ok';}
-      else{st.err=ev.error||{code:'upstream_error'};if(AUTHZ.includes(st.err.code))st.data=null;st.state='error';}
-      renderFeeds();
-    },{refetchInterval:f.every,cache:{staleTime:60000,gcTime:86400000}});
-  }catch(e){st.err={code:'bad_request',message:String(e&&e.message||e)};st.state='error';}
+    const r=await fetch('/api/state',{cache:'no-store',headers:{accept:'application/json'}});
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d){
+      SERVER_EVENTS=Array.isArray(d.events)?d.events:[];
+      if(Number(d.version)!==Number(SERVER_STATE.version)){
+        if($('#eventnote'))$('#eventnote').textContent='A newer state version exists. Reload the System to apply it safely.';
+      }
+      SERVER_STATE=Object.assign({},SERVER_STATE,{available:true,version:Number(d.version)||SERVER_STATE.version,updatedAt:d.updated_at||SERVER_STATE.updatedAt});
+      const cached=readStateCache();if(cached)writeStateCache(Object.assign({},cached,{events:SERVER_EVENTS}));
+      renderSystemStatus();renderEvents();
+    }
+  }catch(e){
+    if($('#eventnote'))$('#eventnote').textContent='The ledger could not refresh. Current on-screen state is unchanged.';
+  }finally{if(btn)btn.disabled=false;}
 }
-async function goLive(){
-  if(!MCP)MCP=await use('mcp');
-  if(!MCP){$('#feedoff').hidden=false;$('#livetxt').textContent='Live feeds unavailable here';return;}
-  const perms=await use('permissions');
-  if(perms){try{await perms.request(FEEDS.map(f=>'mcp:'+f.server));}catch(e){}}
-  const live=FEEDS.some(f=>FS[f.key].unsub);
-  if(live){try{await MCP.invalidate();}catch(e){}}
-  FEEDS.forEach(startFeed);renderFeeds();
-}
-async function initFeeds(){
-  renderFeeds();
-  $('#golive').addEventListener('click',goLive);
-  $('#golive2').addEventListener('click',goLive);
-  MCP=await use('mcp');
-  if(!MCP){$('#feedoff').hidden=false;$('#livesub').textContent='Live feeds run inside Claude';return;}
-  const perms=await use('permissions');
-  if(!perms)return;
-  for(const f of FEEDS){let s='prompt';try{s=await perms.state('mcp:'+f.server);}catch(e){}if(s==='granted')startFeed(f);}
-  renderFeeds();
-}
-
-/* ================= downloads ================= */
-async function initDownloads(){
-  const dl=await use('downloads');const btn=$('#savekit'),note=$('#savenote');
-  if(!dl){note.textContent='';if(!window.claude)$('#kitlink').hidden=false;return;}
-  btn.hidden=false;
-  btn.addEventListener('click',async()=>{btn.disabled=true;note.textContent='Preparing…';
-    try{const r=await fetch('Island_Valet_Trash_Print_Kit.pdf');if(!r.ok)throw {code:'fetch'};const b=await r.blob();const res=await dl.save({filename:'Island_Valet_Trash_Print_Kit.pdf',data:b});note.textContent=res&&res.status==='delivered'?'Sent where you chose.':'Saved.';}
-    catch(e){const c=e&&e.code;note.textContent=c==='declined'?'Not saved.':c==='rate_limited'?'A save is already open.':c==='fetch'?'The PDF didn’t load. Reload the page and try again.':'Saving isn’t available here.';if(c==='unavailable'||c==='not_granted'||c==='capability_disabled')btn.hidden=true;}
-    finally{btn.disabled=false;}});
+function initEvents(){
+  renderSystemStatus();renderEvents();
+  const refresh=$('#refreshstate');if(refresh)refresh.addEventListener('click',refreshLedger);
+  const sync=$('#syncbtn');if(sync)sync.addEventListener('click',()=>location.reload());
 }
 
 /* ================= freedom simulator ================= */
@@ -1023,51 +906,6 @@ function drawChart(pts,target,hitM,endM){
   g+='<line class="target" x1="'+L+'" x2="'+(Wd-R)+'" y1="'+Y(target).toFixed(1)+'" y2="'+Y(target).toFixed(1)+'"/><text class="tlabel" x="'+(L+8)+'" y="'+(Y(target)-7).toFixed(1)+'" text-anchor="start">freedom number</text>';
   if(hitM!=null){const hp=pts[Math.min(hitM,pts.length-1)];g+='<circle class="end" cx="'+X(hp[0]).toFixed(1)+'" cy="'+Y(hp[1]).toFixed(1)+'" r="5"/>';}
   svg.innerHTML=g;
-}
-
-/* ================= STILL STANDING scene ================= */
-function initStill(){
-  const c=$('#stillc');if(!c||!c.getContext)return;const g=c.getContext('2d');let w=0,h=0,vis=false,raf=0;
-  const embers=Array.from({length:26},(_,i)=>({x:Math.random(),y:Math.random(),s:0.4+Math.random(),v:0.02+Math.random()*0.05}));
-  function size(){const r=c.getBoundingClientRect();const dpr=Math.min(2,window.devicePixelRatio||1);w=r.width;h=r.height;c.width=Math.max(1,Math.round(w*dpr));c.height=Math.max(1,Math.round(h*dpr));g.setTransform(dpr,0,0,dpr,0,0);}
-  function frame(t){
-    t=t/1000;if(!w)return;
-    const bg=g.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#0C1120');bg.addColorStop(1,'#05070D');g.fillStyle=bg;g.fillRect(0,0,w,h);
-    const fx=w*0.44,fy=h*0.47,fl=1+0.06*Math.sin(t*7.3)+0.04*Math.sin(t*12.1);
-    // door of light in the far wall
-    const dx=w*0.7,dy=h*0.13,dw=w*0.15,dh=h*0.3,da=0.55+0.1*Math.sin(t*0.7);
-    const dg=g.createLinearGradient(dx,dy,dx,dy+dh);dg.addColorStop(0,'rgba(255,231,176,'+(0.18*da)+')');dg.addColorStop(1,'rgba(255,200,120,'+(0.05*da)+')');
-    g.fillStyle=dg;g.fillRect(dx,dy,dw,dh);g.strokeStyle='rgba(255,227,163,'+(0.55*da)+')';g.lineWidth=1.5;g.strokeRect(dx,dy,dw,dh);
-    const dh2=g.createRadialGradient(dx+dw/2,dy+dh/2,0,dx+dw/2,dy+dh/2,dh);dh2.addColorStop(0,'rgba(255,220,150,'+(0.08*da)+')');dh2.addColorStop(1,'rgba(255,220,150,0)');g.fillStyle=dh2;g.fillRect(dx-dh,dy-dh/2,dw+2*dh,dh*2);
-    // frames that stay dry
-    const frames=[[w*0.08,h*0.16,'gate'],[w*0.25,h*0.1,'map'],[w*0.46,h*0.17,'sign']];
-    frames.forEach(([x,y,k])=>{const fw=w*0.13,fh=w*0.16;g.strokeStyle='rgba(200,190,170,.28)';g.lineWidth=1.2;g.strokeRect(x,y,fw,fh);g.strokeStyle='rgba(220,210,190,.22)';g.beginPath();
-      if(k==='gate'){g.moveTo(x+fw*0.2,y+fh*0.8);g.lineTo(x+fw*0.2,y+fh*0.35);g.quadraticCurveTo(x+fw*0.5,y+fh*0.1,x+fw*0.8,y+fh*0.35);g.lineTo(x+fw*0.8,y+fh*0.8);}
-      else if(k==='map'){for(let i=0;i<7;i++){const cx=x+fw*(0.2+0.6*((i*37)%10)/10),cy=y+fh*(0.2+0.6*((i*53)%10)/10);g.moveTo(cx+4,cy);g.arc(cx,cy,4,0,Math.PI*2);}}
-      else{g.moveTo(x+fw*0.2,y+fh*0.35);g.lineTo(x+fw*0.8,y+fh*0.35);g.moveTo(x+fw*0.2,y+fh*0.5);g.lineTo(x+fw*0.7,y+fh*0.5);g.moveTo(x+fw*0.2,y+fh*0.65);g.lineTo(x+fw*0.6,y+fh*0.65);}
-      g.stroke();});
-    // halo
-    const hr=h*0.42*fl;const hg=g.createRadialGradient(fx,fy,0,fx,fy,hr);hg.addColorStop(0,'rgba(255,176,90,.34)');hg.addColorStop(0.35,'rgba(255,140,60,.12)');hg.addColorStop(1,'rgba(255,120,40,0)');g.fillStyle=hg;g.fillRect(0,0,w,h);
-    // water
-    const wl=h*(0.63+0.025*Math.sin(t*0.23));
-    for(let k=0;k<3;k++){g.beginPath();g.moveTo(0,h);for(let x=0;x<=w;x+=6){const y=wl+k*9+Math.sin(x*0.017+t*(0.7+0.25*k))*4+Math.sin(x*0.043-t*1.2)*2;g.lineTo(x,y);}g.lineTo(w,h);g.closePath();
-      const wg=g.createLinearGradient(0,wl,0,h);wg.addColorStop(0,'rgba('+(28+k*6)+','+(66+k*8)+','+(112+k*10)+','+(0.45+k*0.18)+')');wg.addColorStop(1,'rgba(4,10,22,.96)');g.fillStyle=wg;g.fill();}
-    // reflection
-    for(let i=0;i<9;i++){const ry=wl+14+i*11,rw=(16-i)*1.6*(1+0.3*Math.sin(t*3+i));g.fillStyle='rgba(255,180,100,'+(0.22-i*0.022)+')';g.beginPath();g.ellipse(fx+Math.sin(t*2+i)*3,ry,Math.max(2,rw),1.6,0,0,Math.PI*2);g.fill();}
-    // candle
-    const cw=Math.max(10,w*0.035),ch=h*0.07;g.fillStyle='#E8DCC4';g.fillRect(fx-cw/2,fy+h*0.02,cw,ch);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(fx+cw*0.15,fy+h*0.02,cw*0.35,ch);
-    g.strokeStyle='#2a2018';g.lineWidth=1.5;g.beginPath();g.moveTo(fx,fy+h*0.02);g.lineTo(fx,fy+h*0.005);g.stroke();
-    // flame
-    const fh=h*0.075*fl,fw2=cw*0.55,sway=Math.sin(t*2.1)*2+Math.sin(t*5.3);
-    const fg=g.createRadialGradient(fx,fy-fh*0.25,1,fx,fy-fh*0.3,fh);fg.addColorStop(0,'rgba(255,250,225,1)');fg.addColorStop(0.35,'rgba(255,205,110,.95)');fg.addColorStop(0.8,'rgba(255,120,40,.5)');fg.addColorStop(1,'rgba(255,90,30,0)');
-    g.fillStyle=fg;g.beginPath();g.moveTo(fx,fy+2);g.bezierCurveTo(fx-fw2,fy-fh*0.25,fx-fw2*0.4+sway,fy-fh*0.8,fx+sway,fy-fh);g.bezierCurveTo(fx+fw2*0.4+sway,fy-fh*0.8,fx+fw2,fy-fh*0.25,fx,fy+2);g.fill();
-    // embers
-    embers.forEach(e=>{const ex=fx+(e.x-0.5)*w*0.18,ey=fy-((e.y+t*e.v)%1)*h*0.3;g.fillStyle='rgba(255,190,110,'+(0.5*(1-((e.y+t*e.v)%1)))+')';g.fillRect(ex,ey,e.s,e.s);});
-  }
-  function loop(t){frame(t);if(vis&&!REDUCED)raf=requestAnimationFrame(loop);}
-  size();frame(0);
-  new ResizeObserver(()=>{size();frame(performance.now());}).observe(c);
-  new IntersectionObserver(es=>{vis=es[0].isIntersecting;cancelAnimationFrame(raf);if(vis&&!REDUCED)raf=requestAnimationFrame(loop);}).observe(c);
 }
 
 /* ================= the cosmos (three.js) ================= */
@@ -1162,7 +1000,7 @@ function initCosmos(){
     return {c,grp,head,hit,tail,path,a,e,k,theta:i*1.9+0.8,el};
   });
 
-  const sunLabel=document.createElement('button');sunLabel.type='button';sunLabel.className='sunlabel';sunLabel.innerHTML='<span class="z">Zachary</span><span class="r">the reason</span>';sunLabel.style.zIndex='200';sunLabel.addEventListener('click',()=>openPanel('sun'));labelsEl.appendChild(sunLabel);
+  const sunLabel=document.createElement('button');sunLabel.type='button';sunLabel.className='sunlabel';sunLabel.innerHTML='<span class="z">'+esc(SYSTEM_META.sunName)+'</span><span class="r">'+esc(SYSTEM_META.sunSubtitle||'the reason')+'</span>';sunLabel.style.zIndex='200';sunLabel.addEventListener('click',()=>openPanel('sun'));labelsEl.appendChild(sunLabel);
 
   const pick=[sunHit].concat(bodies.map(b=>b.hit),comets.map(c=>c.hit));
   const ray=new THREE.Raycaster();
@@ -1277,6 +1115,7 @@ async function initDb(){
 /* ================= boot ================= */
 async function boot(){
   await hydrateSystemState();
+  renderIdentity();
   rankNow();
   renderDeadlines();
   renderBriefing(BRIEF_DEFAULT,SERVER_STATE.source==='server'?'· synced':SERVER_STATE.source==='device-cache'?'· device cache':'');
@@ -1284,10 +1123,9 @@ async function boot(){
   renderRanking();
   renderComets();
   initFreedom();
-  initStill();
   try{cosmos=initCosmos();}catch(e){console.error(e);const f=$('#glfail');f.hidden=false;f.textContent='The 3D map couldn’t start here. The ranking below still shows every planet.';$('#gl').hidden=true;}
   await initDb();
-  initAsk();initFeeds();initDownloads();
+  initAsk();initEvents();
 }
 boot();
 })();
