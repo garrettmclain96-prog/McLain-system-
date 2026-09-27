@@ -13,6 +13,18 @@ The interface is a 3D venture map driven by a Gravity Engine. The repository con
 
 See `ARCHITECTURE.md` for trust boundaries and extension points, and `SECURITY.md` for the security model.
 
+## Second Brain
+
+The private knowledge layer adds one complete evidence workflow to the operating system:
+
+1. Capture a PDF, text, Markdown, CSV, or JSON source from the iPhone interface.
+2. Store the original in the private `mclain-brain` object bucket.
+3. Extract searchable passages on-device and save them behind the authenticated knowledge service.
+4. Link a source to one or more ventures.
+5. Search all sources or a single venture and open the exact original from every result.
+
+The browser talks only to `/api/brain`, which forwards the HttpOnly McLain session to the private Supabase Edge Function. Database and storage credentials never reach the client.
+
 ## Run locally
 
     npm ci

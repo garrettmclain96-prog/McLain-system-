@@ -14,6 +14,9 @@
     },
     "api/session/verify.js": {
       "maxDuration": 10
+    },
+    "api/brain.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

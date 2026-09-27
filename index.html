@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="McLain">
-<!-- Generated from src/system.html by scripts/build.mjs. -->
+<!-- Generated from src/system.html by scripts/build.mjs. Edit the source, then run: npm run build -->
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -272,6 +272,31 @@ input[type=range]{width:100%;accent-color:var(--sun);margin:8px 0 0}
 footer{border-top:1px solid var(--line);padding-block:48px 64px;color:var(--faint);font-size:13px}
 footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- second brain ---------- */
+.brain-band{background:linear-gradient(180deg,rgba(12,18,35,.72),rgba(5,7,14,.96))}
+.brain-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;margin-top:24px}
+.brain-card{border:1px solid var(--line2);border-radius:18px;background:rgba(10,15,30,.72);padding:18px}
+.brain-card h3{margin:0 0 6px;font-size:20px}
+.brain-card label{display:grid;gap:6px;margin:12px 0;font-size:12px;color:var(--dust)}
+.brain-card input,.brain-card select,.brain-card textarea{width:100%;border:1px solid var(--line2);border-radius:10px;background:#090E1C;color:var(--star);padding:11px 12px;font:inherit}
+.brain-card input[type=file]{padding:9px}
+.brain-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.brain-results,.brain-library{display:grid;gap:10px;margin-top:14px}
+.brain-result,.brain-source{border:1px solid var(--line);border-radius:14px;background:rgba(7,11,23,.82);padding:14px}
+.brain-result h4,.brain-source h4{margin:3px 0 7px;font-size:16px}
+.brain-result p,.brain-source p{margin:0;color:var(--dust);line-height:1.55;font-size:14px}
+.brain-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.brain-cite{color:var(--sunlight);font-weight:700}
+.brain-status{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:999px;padding:3px 7px}
+.brain-status.ready{color:var(--ok);border-color:rgba(90,214,162,.45)}
+.brain-status.processing{color:var(--sunlight)}
+.brain-status.needs_text,.brain-status.failed{color:var(--warn);border-color:rgba(255,138,61,.5)}
+.brain-empty{border:1px dashed var(--line2);border-radius:14px;padding:20px;color:var(--faint);text-align:center}
+.brain-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-top:28px}
+.brain-head .lede{margin:0}
+.brain-projects{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:760px){.brain-grid{grid-template-columns:1fr}.brain-card{padding:15px}.brain-head{display:block}.brain-head .btn{margin-top:10px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -340,6 +365,39 @@ footer ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;max-width:90ch}
         </div>
       </div>
       <p class="note" id="askoff" hidden>The configured AI route is unavailable in this environment. The rest of the System remains usable.</p>
+    </div>
+  </section>
+
+
+  <section class="band brain-band" id="brain">
+    <div class="wrap">
+      <div class="eyebrow">Second Brain · private knowledge layer</div>
+      <h2 class="sec">Capture it once. <em>Find the proof later.</em></h2>
+      <p class="lede">Upload a source, link it to a venture, process it into searchable passages, then reopen the exact original from every result. Originals and indexes stay behind the same private sign-in as the rest of the System.</p>
+      <div class="brain-grid">
+        <form class="brain-card" id="braincapture">
+          <h3>Capture a source</h3>
+          <p class="note">Text, Markdown, CSV, JSON or PDF · up to 3 MB. PDFs are extracted on your device; the original is stored privately.</p>
+          <label>Document<input id="brainfile" type="file" required accept=".pdf,.txt,.md,.markdown,.csv,.json,application/pdf,text/plain,text/markdown,text/csv,application/json"></label>
+          <label>Title<input id="braintitle" maxlength="200" placeholder="Defaults to the filename"></label>
+          <label>Source link <span class="note">optional</span><input id="brainurl" type="url" maxlength="2048" placeholder="https://…"></label>
+          <label>Link to venture<select id="brainproject"><option value="">No venture link</option></select></label>
+          <div class="brain-actions"><button class="btn primary" id="braincapturego" type="submit">Capture + process</button><span class="note" id="braincapturestatus"></span></div>
+        </form>
+        <div class="brain-card">
+          <h3>Search your sources</h3>
+          <p class="note">Results are passages from your own captured material, with a source and locator on every hit.</p>
+          <label>Question or keywords<input id="brainquery" type="search" maxlength="1000" placeholder="What did the deed say about mineral rights?"></label>
+          <label>Search scope<select id="brainsearchproject"><option value="">All ventures</option></select></label>
+          <div class="brain-actions"><button class="btn primary" id="brainsearchgo" type="button">Search sources</button><span class="note" id="brainsearchstatus"></span></div>
+          <div class="brain-results" id="brainresults"><div class="brain-empty">Search results will appear here with direct source links.</div></div>
+        </div>
+      </div>
+      <div class="brain-head">
+        <div><div class="eyebrow">Source library</div><p class="lede" id="brainlibrarynote">Loading your private sources…</p></div>
+        <button class="btn" id="brainrefresh" type="button">Refresh sources</button>
+      </div>
+      <div class="brain-library" id="brainlibrary"></div>
     </div>
   </section>
 
@@ -610,6 +668,7 @@ function planetPanel(v){
       ['speed','cash','stability','meaning','blockers'].map(k=>'<label style="font-size:12px;color:var(--dust)">'+esc(k)+'<input id="vs-'+k+'" type="number" min="1" max="5" step="1" value="'+Number(v.s[k]||1)+'" style="width:100%;margin-top:4px"></label>').join('')+
       '</div><div class="acts" style="margin-top:12px"><button class="btn primary" id="saveventure" type="button">Save to System</button><span class="note" id="veditnote"></span></div></div></div>';
   }
+  h+='<div class="p-block"><button class="btn" type="button" data-brain-project="'+esc(v.id)+'">Open project sources</button><p class="note">Search only the evidence linked to this venture.</p></div>';
   h+=extras(v);
   h+='<div class="p-block"><h3>Why it sits here</h3>'+axisRows(v)+'</div>';
   return h;
@@ -645,6 +704,7 @@ function wirePanel(){
   const v=panelId&&byId(panelId);
   if(!v)return;
   const open=$('#editventure'),form=$('#vedit'),save=$('#saveventure'),note=$('#veditnote');
+  const sourcesBtn=$('[data-brain-project]',pbody);if(sourcesBtn)sourcesBtn.addEventListener('click',()=>openBrainProject(v.id));
   if(open&&form)open.addEventListener('click',()=>{form.hidden=!form.hidden;open.textContent=form.hidden?'Update priority inputs':'Close editor';});
   if(save&&form)save.addEventListener('click',async()=>{
     const score={};
@@ -844,6 +904,191 @@ async function initAsk(){
   };
   go.addEventListener('click',run);
   q.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();run();}});
+}
+
+
+/* ================= second brain ================= */
+const BRAIN={sources:[],projects:[],total:0,projectFocus:''};
+const BRAIN_PDF_VERSION='6.3.289';
+const BRAIN_PDF_BASE='https://cdn.jsdelivr.net/npm/pdfjs-dist@'+BRAIN_PDF_VERSION+'/build/';
+function brainJson(url,options){
+  return fetch(url,options).then(async r=>{
+    const d=await r.json().catch(()=>null);
+    if(!r.ok)throw new Error(d&&d.error?d.error:'Knowledge request failed.');
+    return d||{};
+  });
+}
+function brainPost(body){
+  return brainJson('/api/brain',{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify(body)});
+}
+function brainBytes(n){
+  n=Number(n)||0;if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(n<10240?1:0)+' KB';return (n/1048576).toFixed(1)+' MB';
+}
+function brainProjectName(id){
+  const p=BRAIN.projects.find(x=>x.id===id)||byId(id);return p?p.name:id;
+}
+function brainSetProjectOptions(){
+  const capture=$('#brainproject'),search=$('#brainsearchproject');if(!capture||!search)return;
+  const list=(BRAIN.projects.length?BRAIN.projects:VENTURES).filter(p=>p&&p.id&&p.name);
+  const cap=capture.value,sea=search.value;
+  capture.innerHTML='<option value="">No venture link</option>'+list.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+  search.innerHTML='<option value="">All ventures</option>'+list.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+  if(list.some(p=>p.id===cap))capture.value=cap;
+  if(list.some(p=>p.id===sea))search.value=sea;
+  if(BRAIN.projectFocus&&list.some(p=>p.id===BRAIN.projectFocus)){capture.value=BRAIN.projectFocus;search.value=BRAIN.projectFocus;}
+}
+function brainLinkedProjects(source){
+  return Array.isArray(source&&source.mclain_brain_links)?source.mclain_brain_links.map(x=>x&&x.project_id).filter(Boolean):[];
+}
+function brainRenderSources(){
+  const el=$('#brainlibrary'),note=$('#brainlibrarynote');if(!el)return;
+  if(note)note.textContent=BRAIN.total?BRAIN.total+' private source'+(BRAIN.total===1?'':'s')+(BRAIN.projectFocus?' linked to '+brainProjectName(BRAIN.projectFocus):'')+'.':'No captured sources yet.';
+  if(!BRAIN.sources.length){el.innerHTML='<div class="brain-empty">No sources in this scope yet. Capture the first document above.</div>';return;}
+  el.innerHTML=BRAIN.sources.map(s=>{
+    const links=brainLinkedProjects(s);
+    const canProcess=['uploaded','failed','needs_text'].includes(String(s.status));
+    return '<article class="brain-source"><div class="brain-meta"><span class="brain-status '+esc(s.status)+'">'+esc(String(s.status||'unknown').replace('_',' '))+'</span><span>'+esc(brainBytes(s.byte_count))+'</span><span>'+esc(s.mime||'')+'</span></div>'+
+      '<h4>'+esc(s.title)+'</h4><p>'+esc(s.filename)+'</p>'+
+      (links.length?'<div class="brain-projects">'+links.map(id=>'<button class="pill" type="button" data-open="'+esc(id)+'">'+esc(brainProjectName(id))+'</button>').join('')+'</div>':'')+
+      '<div class="brain-actions"><a class="btn" href="/api/brain?action=original&id='+encodeURIComponent(s.id)+'" target="_blank" rel="noopener">Open original ↗</a>'+
+      (canProcess?'<button class="btn" type="button" data-brain-process="'+esc(s.id)+'">Process now</button>':'')+
+      (s.source_url?'<a class="btn" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">Source link ↗</a>':'')+'</div>'+
+      (s.error?'<p class="note">'+esc(s.error)+'</p>':'')+'</article>';
+  }).join('');
+  el.querySelectorAll('[data-brain-process]').forEach(btn=>btn.addEventListener('click',()=>brainReprocess(btn.getAttribute('data-brain-process'),btn)));
+}
+function brainRenderResults(passages){
+  const el=$('#brainresults');if(!el)return;
+  if(!passages.length){el.innerHTML='<div class="brain-empty">No matching passage found in the current scope.</div>';return;}
+  el.innerHTML=passages.map((p,i)=>'<article class="brain-result"><div class="brain-meta"><span class="brain-cite">Source '+(i+1)+'</span><span>'+esc(p.locator||'passage')+'</span><span>'+esc(p.extraction_method||'')+'</span></div><h4>'+esc(p.title||'Untitled source')+'</h4><p>'+esc(p.content||'')+'</p><div class="brain-actions"><a class="btn" href="/api/brain?action=original&id='+encodeURIComponent(p.source_id)+'" target="_blank" rel="noopener">Open original source ↗</a></div></article>').join('');
+}
+async function brainLoadSources(project){
+  if(window.claude)return;
+  const q=project?'&project='+encodeURIComponent(project):'';
+  const d=await brainJson('/api/brain?action=list'+q,{headers:{accept:'application/json'},cache:'no-store'});
+  BRAIN.sources=Array.isArray(d.sources)?d.sources:[];BRAIN.projects=Array.isArray(d.projects)?d.projects:[];BRAIN.total=Number(d.total)||0;
+  brainSetProjectOptions();brainRenderSources();
+}
+function brainMime(file){
+  if(file.type)return file.type;
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  return {txt:'text/plain',md:'text/markdown',markdown:'text/markdown',csv:'text/csv',json:'application/json',pdf:'application/pdf'}[ext]||'';
+}
+function brainNormalizeFile(file){
+  const mime=brainMime(file);return mime&&mime!==file.type?new File([file],file.name,{type:mime,lastModified:file.lastModified}):file;
+}
+function brainSplit(text,locator){
+  text=String(text||'').replace(/\r/g,'').replace(/[\t ]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+  if(!text)return[];
+  const out=[];let part=1;
+  const push=chunk=>{chunk=chunk.trim();if(!chunk)return;for(let i=0;i<chunk.length;i+=2100){const piece=chunk.slice(i,i+2100).trim();if(piece)out.push({locator:locator+(part>1?' · part '+part:''),content:piece});part++;}};
+  const blocks=text.split(/\n\n+/);let buf='';
+  for(const block of blocks){if((buf+'\n\n'+block).length>2100){push(buf);buf=block;}else buf+=(buf?'\n\n':'')+block;}
+  push(buf);return out;
+}
+async function brainExtract(file){
+  const mime=brainMime(file);
+  if(mime==='application/pdf'){
+    const pdfjs=await import(BRAIN_PDF_BASE+'pdf.min.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc=BRAIN_PDF_BASE+'pdf.worker.min.mjs';
+    const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+    const chunks=[];
+    for(let pageNo=1;pageNo<=pdf.numPages;pageNo++){
+      const page=await pdf.getPage(pageNo),tc=await page.getTextContent();
+      const text=tc.items.map(x=>x&&x.str||'').join(' ').replace(/\s+/g,' ').trim();
+      chunks.push(...brainSplit(text,'Page '+pageNo));
+      if(chunks.length>256)throw new Error('This PDF creates too many passages. Split it into smaller files.');
+    }
+    return {method:'pdf-text',chunks:chunks.slice(0,256)};
+  }
+  if(['text/plain','text/markdown','text/csv','application/json'].includes(mime)){
+    return {method:'text',chunks:brainSplit(await file.text(),'Document').slice(0,256)};
+  }
+  throw new Error('This file can be stored, but this build cannot extract searchable text from it yet.');
+}
+async function brainProcess(source,file,statusEl){
+  if(source.status==='ready'){if(statusEl)statusEl.textContent='Already processed.';return;}
+  if(statusEl)statusEl.textContent='Claiming processing lease…';
+  const claimed=await brainPost({action:'claim',id:source.id});
+  if(!claimed.lease){
+    if(claimed.source&&claimed.source.status==='ready'){if(statusEl)statusEl.textContent='Already processed.';return;}
+    throw new Error('This source is already being processed. Refresh in a moment.');
+  }
+  try{
+    if(statusEl)statusEl.textContent='Extracting searchable text…';
+    const extracted=await brainExtract(file);
+    if(!extracted.chunks.length)throw new Error('No searchable text was found in this file.');
+    if(statusEl)statusEl.textContent='Saving '+extracted.chunks.length+' passages…';
+    await brainPost({action:'finish',id:source.id,lease:claimed.lease,method:extracted.method,chunks:extracted.chunks});
+    if(statusEl)statusEl.textContent='Ready. Search it below.';
+  }catch(error){
+    const needs=/No searchable text|cannot extract searchable text/i.test(error.message);
+    await brainPost({action:'fail',id:source.id,lease:claimed.lease,status:needs?'needs_text':'failed',message:error.message}).catch(()=>{});
+    throw error;
+  }
+}
+async function brainReprocess(id,button){
+  const source=BRAIN.sources.find(x=>x.id===id);if(!source)return;
+  const old=button.textContent;button.disabled=true;button.textContent='Processing…';
+  try{
+    const r=await fetch('/api/brain?action=original&id='+encodeURIComponent(id),{cache:'no-store'});
+    if(!r.ok)throw new Error('Could not reopen the original file.');
+    const blob=await r.blob(),file=new File([blob],source.filename,{type:source.mime});
+    await brainProcess(source,file,$('#braincapturestatus'));
+    await brainLoadSources(BRAIN.projectFocus);
+  }catch(e){$('#braincapturestatus').textContent=e.message;}finally{button.disabled=false;button.textContent=old;}
+}
+async function brainCapture(event){
+  event.preventDefault();
+  const fileInput=$('#brainfile'),status=$('#braincapturestatus'),go=$('#braincapturego');
+  let file=fileInput.files&&fileInput.files[0];if(!file){status.textContent='Choose a document first.';return;}
+  file=brainNormalizeFile(file);
+  if(!brainMime(file)){status.textContent='Use a PDF, text, Markdown, CSV or JSON file.';return;}
+  if(file.size>3*1024*1024){status.textContent='Keep each source under 3 MB.';return;}
+  go.disabled=true;status.textContent='Uploading private original…';
+  try{
+    const form=new FormData();form.append('file',file);form.append('title',$('#braintitle').value.trim()||file.name);form.append('url',$('#brainurl').value.trim());form.append('project',$('#brainproject').value);
+    const r=await fetch('/api/brain',{method:'POST',body:form,headers:{accept:'application/json'}});
+    const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d&&d.error?d.error:'Upload failed.');
+    await brainProcess(d.source,file,status);
+    BRAIN.projectFocus=$('#brainproject').value;
+    await brainLoadSources(BRAIN.projectFocus);
+    fileInput.value='';$('#braintitle').value='';$('#brainurl').value='';
+    await refreshLedger();
+  }catch(e){status.textContent=e.message;}finally{go.disabled=false;}
+}
+async function brainSearch(){
+  const q=$('#brainquery').value.trim(),status=$('#brainsearchstatus'),go=$('#brainsearchgo');
+  if(!q){status.textContent='Enter a question or keywords.';return;}
+  go.disabled=true;status.textContent='Searching private passages…';
+  try{
+    const d=await brainPost({action:'search',query:q,project:$('#brainsearchproject').value||null});
+    const rows=Array.isArray(d.passages)?d.passages:[];brainRenderResults(rows);status.textContent=rows.length?rows.length+' cited passage'+(rows.length===1?'':'s')+'.':'No match.';
+  }catch(e){status.textContent=e.message;}finally{go.disabled=false;}
+}
+async function openBrainProject(id){
+  BRAIN.projectFocus=id||'';
+  closePanel();
+  const section=$('#brain');if(section)section.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
+  brainSetProjectOptions();
+  if($('#brainsearchproject'))$('#brainsearchproject').value=BRAIN.projectFocus;
+  if($('#brainproject'))$('#brainproject').value=BRAIN.projectFocus;
+  try{await brainLoadSources(BRAIN.projectFocus);}catch(e){if($('#brainlibrarynote'))$('#brainlibrarynote').textContent=e.message;}
+}
+function initBrain(){
+  const form=$('#braincapture');if(!form)return;
+  if(window.claude){
+    form.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
+    $('#brainlibrarynote').textContent='The private knowledge layer is available in the signed-in McLain System app.';
+    $('#brainlibrary').innerHTML='<div class="brain-empty">Open the private installed app to capture and search sources.</div>';
+    return;
+  }
+  form.addEventListener('submit',brainCapture);
+  $('#brainsearchgo').addEventListener('click',brainSearch);
+  $('#brainquery').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();brainSearch();}});
+  $('#brainrefresh').addEventListener('click',()=>brainLoadSources(BRAIN.projectFocus).catch(e=>{$('#brainlibrarynote').textContent=e.message;}));
+  $('#brainsearchproject').addEventListener('change',e=>{BRAIN.projectFocus=e.target.value;brainLoadSources(BRAIN.projectFocus).catch(()=>{});});
+  brainLoadSources('').catch(e=>{$('#brainlibrarynote').textContent=e.message;$('#brainlibrary').innerHTML='<div class="brain-empty">Knowledge storage is unavailable right now.</div>';});
 }
 
 /* ================= event ledger ================= */
@@ -1161,7 +1406,7 @@ async function boot(){
   initFreedom();
   try{cosmos=initCosmos();}catch(e){console.error(e);const f=$('#glfail');f.hidden=false;f.textContent='The 3D map couldn’t start here. The ranking below still shows every planet.';$('#gl').hidden=true;}
   await initDb();
-  initAsk();initEvents();
+  initAsk();initBrain();initEvents();
 }
 boot();
 })();

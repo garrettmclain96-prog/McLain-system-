@@ -51,6 +51,8 @@ walk(rootPath);
 const src=readFileSync(new URL('../src/system.html',import.meta.url),'utf8');
 const index=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const middleware=readFileSync(new URL('../middleware.js',import.meta.url),'utf8');
+const brainApi=readFileSync(new URL('../api/brain.js',import.meta.url),'utf8');
+const brainFn=readFileSync(new URL('../supabase/functions/mclain-brain/index.ts',import.meta.url),'utf8');
 const scriptOpen=src.lastIndexOf('<script>');
 const scriptClose=src.lastIndexOf('</script>');
 if(scriptOpen<0||scriptClose<=scriptOpen)fail('inline application script missing');
@@ -69,7 +71,13 @@ const required=[
   ['server weight sync',src.includes("postSystemState('weights'")],
   ['session verifier public path',middleware.includes("'/api/session/verify'")],
   ['safe fallback in source',src.includes("id:'system'")],
-  ['safe fallback in generated app',index.includes("id:'system'")]
+  ['safe fallback in generated app',index.includes("id:'system'")],
+  ['second brain UI',src.includes('id="brain"')],
+  ['second brain upload route',src.includes('/api/brain')],
+  ['project source shortcut',src.includes('Open project sources')],
+  ['source-backed search',src.includes("action:'search'")&&src.includes('Open original source')],
+  ['protected brain proxy',brainApi.includes("COOKIE = 'mclain_session'")&&brainApi.includes('mclain-brain')],
+  ['private brain service source',brainFn.includes('mclain_brain_search')&&brainFn.includes('Custom auth is mandatory')]
 ];
 for(const [name,ok] of required){
   console.log((ok?'PASS ':'FAIL ')+name);

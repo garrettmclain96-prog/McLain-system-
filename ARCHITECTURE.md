@@ -32,3 +32,9 @@ The app hydrates from private state before rendering. A successful response is c
 External systems should write through server-side adapters or the state control plane, never directly from browser code. Useful event types include `deployment.ready`, `lead.created`, `deadline.changed`, `revenue.received`, and `task.completed`.
 
 Those events can later drive score changes, briefings, alerts, and automations without coupling the UI to any single vendor.
+
+## Knowledge layer
+
+The Second Brain is a sibling private service to the canonical operating state. Originals live in a private Storage bucket; source metadata, venture links, and full-text-searchable passages live in dedicated Postgres tables. The browser reaches it only through the authenticated Vercel `/api/brain` proxy.
+
+Processing uses a short server lease before extracted passages are committed. That prevents stale or overlapping processors from overwriting a newer attempt. Search returns bounded source passages and the UI always exposes the original source beside the result.
