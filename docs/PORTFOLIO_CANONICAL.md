@@ -81,3 +81,16 @@ A prototype is not finished because it deploys. For this portfolio, a system clo
 - **GloveGate / hardware:** built revision → measured test → durability data → filing/vendor package aligned to tested hardware.
 
 Anything short of that is BUILD, VALIDATE, MERGE, HOLD, or ARCHIVE—not DONE.
+
+
+## Security and consolidation baseline — 2026-09-27
+
+- **OpsPost public demo:** isolated local-only sandbox; obsolete browser demo credentials and provisioning code removed; legacy demo auth users disabled.
+- **Quo Front Desk:** connected to the Operations inbox. Verification observed 15 webhook receipts producing 15 Front Desk events with zero failed receipts.
+- **ValetOS:** public creation of confirmed bookings is disabled. Checkout fails closed until Square credentials and server-side payment confirmation are valid.
+- **Beach Site Check / Site Sight:** guest report submission remains public; inspection workspace, guest-report reading, and report resolution require authenticated crew.
+- **Evidence Chronicle + legacy Family Evidence Hub:** retained as archival research stores, but browser access is locked with RLS and no anonymous/public policies.
+- **Vault Intelligence:** storage bucket is private and database policies are authenticated/user-scoped. It remains a legacy knowledge prototype to merge conceptually into McLain System.
+- **BarOS Pro:** preserved as a beverage/recipe module and labeled legacy; staff/venue operations converge into OpsPost.
+- **Legacy Lovable Jamaica Ops:** preserved, clearly labeled legacy, and points users to OpsPost as canonical production.
+- **Credential hygiene:** obvious live-secret patterns were not found on active default GitHub branches during the verification pass. Historical exported credential material remains treated as exposed and must be rotated at each provider.
