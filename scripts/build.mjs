@@ -43,4 +43,5 @@ for (const file of ['index.html', 'login.html', 'portfolio.html', 'manifest.webm
 cpSync(new URL('icons/', root), new URL('icons/', pub), { recursive: true });
 mkdirSync(new URL('data/', pub), { recursive: true });
 cpSync(new URL('data/portfolio.json', root), new URL('data/portfolio.json', pub));
+cpSync(new URL('data/blockers.json', root), new URL('data/blockers.json', pub));
 console.log('public/ ready');
