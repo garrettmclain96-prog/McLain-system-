@@ -121,6 +121,53 @@
       "family": "legacy",
       "role": "consumer project family",
       "state": "hold-decide"
+    },
+    {
+      "id": "baros-pro",
+      "family": "ops",
+      "role": "legacy beverage/recipe module; staff operations consolidate into OpsPost",
+      "state": "merge",
+      "url": "https://barbible.lovable.app",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "vault-intelligence",
+      "family": "internal",
+      "role": "legacy file-intelligence prototype; canonical knowledge control plane is McLain System",
+      "state": "merge",
+      "canonical_parent": "mclain-system"
+    },
+    {
+      "id": "jamaica-ops-lovable-legacy",
+      "family": "ops",
+      "role": "legacy published Jamaica Ops build",
+      "state": "legacy",
+      "url": "https://jamaica-ops.lovable.app",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "evidence-chronicle",
+      "family": "evidence",
+      "role": "retired family-evidence experiment; database preserved but browser access locked",
+      "state": "archive-locked",
+      "canonical_parent": "family-evidence"
+    },
+    {
+      "id": "family-evidence-hub-legacy",
+      "family": "evidence",
+      "role": "retired family-evidence experiment; database preserved but browser access locked",
+      "state": "archive-locked",
+      "canonical_parent": "family-evidence"
     }
-  ]
+  ],
+  "security_baseline": {
+    "opspost_public_demo": "local-only sandbox; no live backend auth",
+    "opspost_quo": "connected; 15 webhook receipts mapped to 15 Front Desk events; 0 failed receipts at verification",
+    "valet_payment": "fail-closed until Square production credential and server-side payment confirmation are valid",
+    "site_sight": "guest submission public; inspection/report reading and resolution crew-only",
+    "evidence_chronicle": "RLS enabled; anonymous/public policies removed",
+    "family_evidence_hub_legacy": "RLS enabled; no anonymous/public policies",
+    "vault_intelligence": "private bucket and authenticated owner-scoped database policies",
+    "secret_scan": "no obvious live secret literals matched on active default GitHub branches; historical exported credentials still require provider rotation"
+  }
 }
