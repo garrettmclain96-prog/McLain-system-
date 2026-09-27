@@ -11,7 +11,7 @@ The interface is a 3D venture map driven by a Gravity Engine. The repository con
 - **Browser** receives no database credentials and caches only the authenticated user's last known state for resilience.
 - **Gravity Engine** weights speed to revenue, cash potential, stability, deadline pressure, meaning, and blocker drag.
 
-See `ARCHITECTURE.md` for trust boundaries and extension points, and `SECURITY.md` for the security model.
+See `ARCHITECTURE.md` for trust boundaries and extension points, and `SECURITY.md` for the security model.\n\nThe public-safe product ownership map lives in `docs/PORTFOLIO_CANONICAL.md`, with a machine-readable registry in `data/portfolio.json`. Those files define which projects are canonical products, modules, legacy surfaces, or internal tooling so new work does not fork an existing product by accident.
 
 ## Second Brain
 
