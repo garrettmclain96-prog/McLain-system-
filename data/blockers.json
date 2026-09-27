@@ -1,0 +1,55 @@
+{
+  "verified_at": "2026-09-27",
+  "blockers": [
+    {
+      "system": "opspost",
+      "kind": "real_world_validation",
+      "required": "one real shift closing issue -> owner -> work -> evidence -> manager closure"
+    },
+    {
+      "system": "opspost-rvbt",
+      "kind": "provider_approval",
+      "required": "sanctioned RV Business Tech interface/access plus pilot owner"
+    },
+    {
+      "system": "valetos",
+      "kind": "credential_and_payment_verification",
+      "required": "valid Square production credential and server-side payment confirmation/webhook"
+    },
+    {
+      "system": "seawall-turnover",
+      "kind": "real_world_validation",
+      "required": "one paid completed customer turnover with acceptance and measured cost/time"
+    },
+    {
+      "system": "claimforge",
+      "kind": "hosting_connection",
+      "required": "canonical production host/import for existing repository; do not duplicate implementation"
+    },
+    {
+      "system": "turnbot",
+      "kind": "physical_validation",
+      "required": "tested physical revision plus focused licensing execution"
+    },
+    {
+      "system": "glovegate",
+      "kind": "physical_validation",
+      "required": "fabrication, measured validation and durability test"
+    },
+    {
+      "system": "family-evidence",
+      "kind": "research_proof",
+      "required": "source-to-person/tract-to-disposition proof chain with contradictions resolved"
+    },
+    {
+      "system": "credentials",
+      "kind": "provider_rotation",
+      "required": "rotate/revoke credentials present in historical exports and replace dependent env values"
+    }
+  ],
+  "non_blocking_notes": [
+    "Vault Intelligence database/storage are private; Lovable credits blocked only the legacy banner edit.",
+    "MealForge Kitchen OS is unpublished; Lovable DB audit returned provider-side 499 cancellations.",
+    "TraceForge runtime warning is Node DEP0169 url.parse with no matching call in repository source."
+  ]
+}
