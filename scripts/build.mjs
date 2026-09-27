@@ -37,8 +37,8 @@ const root = new URL('../', import.meta.url);
 const pub = new URL('../public/', import.meta.url);
 rmSync(pub, { recursive: true, force: true });
 mkdirSync(pub, { recursive: true });
-for (const file of ['index.html', 'login.html', 'manifest.webmanifest', 'robots.txt']) {
+for (const file of ['index.html', 'login.html', 'portfolio.html', 'manifest.webmanifest', 'robots.txt']) {
   cpSync(new URL(file, root), new URL(file, pub));
 }
-cpSync(new URL('icons/', root), new URL('icons/', pub), { recursive: true });
+cpSync(new URL('icons/', root), new URL('icons/', pub), { recursive: true });\nmkdirSync(new URL('data/', pub), { recursive: true });\ncpSync(new URL('data/portfolio.json', root), new URL('data/portfolio.json', pub));
 console.log('public/ ready');
