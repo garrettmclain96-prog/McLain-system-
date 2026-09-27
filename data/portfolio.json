@@ -1,0 +1,126 @@
+{
+  "verified_at": "2026-09-27",
+  "rules": {
+    "one_product_one_home": true,
+    "public_demo_live_data": false,
+    "fake_metrics": false,
+    "payment_fail_closed": true,
+    "private_state_location": "McLain System authenticated control plane"
+  },
+  "systems": [
+    {
+      "id": "mclain-system",
+      "family": "control-plane",
+      "role": "private portfolio OS",
+      "state": "active",
+      "repo": "garrettmclain96-prog/McLain-system-",
+      "vercel_project": "mclain-system"
+    },
+    {
+      "id": "opspost",
+      "family": "ops",
+      "role": "commercial operations platform",
+      "state": "active",
+      "repo": "garrettmclain96-prog/beachside-crew",
+      "url": "https://opspost.vercel.app"
+    },
+    {
+      "id": "jamaica-ops",
+      "family": "ops",
+      "role": "OpsPost deployment profile",
+      "state": "active-deployment",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "valetos",
+      "family": "ops",
+      "role": "paid valet service module",
+      "state": "blocked-payment-verification",
+      "repo": "garrettmclain96-prog/valetos-enterprise",
+      "url": "https://valetos-enterprise.vercel.app",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "site-sight",
+      "family": "ops",
+      "role": "legacy field inspection module",
+      "state": "merge",
+      "url": "https://site-sight-jam.lovable.app",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "seawall-turnover",
+      "family": "services",
+      "role": "local turnover service",
+      "state": "validate",
+      "repo": "garrettmclain96-prog/seawall-turnover",
+      "vercel_project": "seawall-turnover-hpio"
+    },
+    {
+      "id": "traceforge",
+      "family": "evidence",
+      "role": "general sourced investigation",
+      "state": "active",
+      "repo": "garrettmclain96-prog/traceforge",
+      "vercel_project": "traceforge"
+    },
+    {
+      "id": "claimforge",
+      "family": "evidence",
+      "role": "recovery discovery and claimant workflow",
+      "state": "build-deploy",
+      "repo": "garrettmclain96-prog/claimforge-accelerate"
+    },
+    {
+      "id": "family-evidence",
+      "family": "evidence",
+      "role": "family/property evidence vertical",
+      "state": "active-consolidate",
+      "vercel_project": "family-evidence-engine-mobile"
+    },
+    {
+      "id": "parcelforge",
+      "family": "evidence",
+      "role": "parcel/property intelligence",
+      "state": "active",
+      "vercel_project": "parcelforge"
+    },
+    {
+      "id": "community-meal-flow",
+      "family": "community",
+      "role": "meal coordination",
+      "state": "active-validate",
+      "repo": "garrettmclain96-prog/community-meal-flow",
+      "vercel_project": "community-meal-flow"
+    },
+    {
+      "id": "aurora-core",
+      "family": "ops",
+      "role": "shared device telemetry layer",
+      "state": "module-merge",
+      "repo": "garrettmclain96-prog/Aurora-core-beta",
+      "vercel_project": "aurora-core-beta",
+      "canonical_parent": "opspost"
+    },
+    {
+      "id": "fold-zero",
+      "family": "internal",
+      "role": "experiment engine",
+      "state": "internal",
+      "vercel_project": "fold-zero"
+    },
+    {
+      "id": "ecc",
+      "family": "internal",
+      "role": "engineering execution/audit",
+      "state": "internal",
+      "vercel_project": "ecc"
+    },
+    {
+      "id": "youbeenclassed",
+      "family": "legacy",
+      "role": "consumer project family",
+      "state": "hold-decide"
+    }
+  ]
+}
