@@ -32,12 +32,23 @@ a.btn{color:var(--text);text-decoration:none;border:1px solid var(--line);border
 <div class="rule">Do not create a new repo or deployment for a feature that belongs to an existing product. Jamaica Ops is an OpsPost deployment; Site Sight, ValetOS and Aurora are modules of the Ops family.</div>
 <div class="filters" id="filters"></div>
 <div class="list" id="list"><div class="empty">Loading registry…</div></div>
+<section style="margin-top:24px">
+  <div class="kicker">External blockers</div>
+  <h2 style="font-size:22px;margin:6px 0 4px">What still requires the outside world</h2>
+  <div class="sub" style="margin-bottom:10px">These cannot be truthfully closed by another code commit.</div>
+  <div class="list" id="blockers"><div class="empty">Loading blockers…</div></div>
+</section>
 </div>
 <script>
 const nice=s=>String(s||'').replaceAll('-',' ').replace(/\b\w/g,m=>m.toUpperCase());
 const cls=s=>{s=String(s||'');if(s.includes('active'))return'active';if(s.includes('blocked'))return'blocked';if(s.includes('merge'))return'merge';if(s.includes('validate'))return'validate';if(s.includes('build'))return'build';if(s.includes('internal'))return'internal';return'hold'};
 let data,filter='all';
 fetch('/data/portfolio.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{data=j;render()}).catch(()=>document.getElementById('list').innerHTML='<div class="empty">Registry unavailable.</div>');
+fetch('/data/blockers.json',{cache:'no-store'}).then(r=>r.json()).then(renderBlockers).catch(()=>document.getElementById('blockers').innerHTML='<div class="empty">Blocker registry unavailable.</div>');
+function renderBlockers(j){
+ const rows=j.blockers||[];
+ document.getElementById('blockers').innerHTML=rows.map(x=>'<article class="card"><div class="row"><div><div class="name">'+nice(x.system)+'</div><div class="role">'+x.required+'</div></div><div class="state blocked">'+nice(x.kind)+'</div></div></article>').join('')||'<div class="empty">No external blockers recorded.</div>';
+}
 function render(){
  const systems=data.systems||[]; const fam=[...new Set(systems.map(x=>x.family))];
  const counts={systems:systems.length,active:systems.filter(x=>String(x.state).includes('active')).length,blocked:systems.filter(x=>String(x.state).includes('blocked')).length,merge:systems.filter(x=>/merge|legacy/.test(String(x.state))).length};
