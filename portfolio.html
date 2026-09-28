@@ -3,59 +3,231 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05070E">
+<meta name="theme-color" content="#05070e">
 <meta name="robots" content="noindex,nofollow">
-<title>Portfolio — McLain System</title>
+<title>Portfolio Launcher — McLain System</title>
 <style>
-:root{color-scheme:dark;--bg:#05070e;--panel:#0d1326;--line:#253052;--text:#eef1f8;--muted:#9aa5bf;--gold:#f4b740;--ok:#5ad6a2;--warn:#ffb36b;--bad:#ff6e7f}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.wrap{max-width:880px;margin:auto;padding:18px 14px 40px}.top{position:sticky;top:0;z-index:5;background:rgba(5,7,14,.92);backdrop-filter:blur(14px);padding:12px 0 14px;border-bottom:1px solid var(--line)}
-.kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}h1{font-size:30px;line-height:1.05;margin:5px 0 7px}.sub{color:var(--muted);font-size:14px;line-height:1.45}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-a.btn{color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:13px;font-weight:700;background:var(--panel)}
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px}.metric b{display:block;font-size:22px}.metric span{display:block;color:var(--muted);font-size:10px;margin-top:4px;text-transform:uppercase;letter-spacing:.07em}
-.filters{display:flex;gap:7px;overflow:auto;padding:3px 0 12px;scrollbar-width:none}.filter{white-space:nowrap;border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 11px;border-radius:999px;font-size:12px;font-weight:700}.filter.on{border-color:var(--gold);color:#181004;background:var(--gold)}
-.list{display:grid;gap:10px}.card{border:1px solid var(--line);background:linear-gradient(180deg,#0d1326,#0a0f1e);border-radius:16px;padding:14px}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.name{font-size:17px;font-weight:800}.role{color:var(--muted);font-size:13px;margin-top:3px;line-height:1.35}.state{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}.active{color:var(--ok)}.blocked{color:var(--bad)}.merge,.validate,.build{color:var(--warn)}.hold,.internal{color:var(--muted)}
-.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:4px 7px;border-radius:7px}.open{display:inline-block;margin-top:11px;color:#ffe3a3;font-size:12px;font-weight:700}
-.rule{margin:14px 0;border:1px solid rgba(244,183,64,.35);background:rgba(244,183,64,.07);border-radius:14px;padding:12px;font-size:13px;line-height:1.45;color:#e8debf}
-.empty{color:var(--muted);padding:30px 8px;text-align:center}
-@media(max-width:620px){.summary{grid-template-columns:repeat(2,1fr)}h1{font-size:27px}.wrap{padding-left:12px;padding-right:12px}.card{padding:13px}}
+:root{
+  color-scheme:dark;
+  --bg:#05070e;--panel:#0c1222;--panel2:#11192d;--line:#263354;--text:#f4f6fb;--muted:#9aa6bf;
+  --gold:#f4b740;--gold2:#ffe3a3;--green:#67d7a7;--orange:#ffb36b;--red:#ff6e7f;--blue:#7db7ff;
+  --shadow:0 18px 55px rgba(0,0,0,.32)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:
+radial-gradient(70% 50% at 50% -5%,rgba(244,183,64,.12),transparent 65%),var(--bg);
+color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,input,a{font:inherit}.wrap{max-width:1120px;margin:auto;padding:14px 12px 44px}
+.top{position:sticky;top:0;z-index:30;margin:0 -12px;padding:10px 12px 12px;background:rgba(5,7,14,.9);
+backdrop-filter:blur(18px);border-bottom:1px solid rgba(38,51,84,.72)}
+.brandrow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.kicker{font-size:10px;letter-spacing:.14em;
+text-transform:uppercase;color:var(--gold);font-weight:800}.title{font-size:26px;line-height:1.05;margin:4px 0 4px;font-weight:850;letter-spacing:-.035em}
+.sub{color:var(--muted);font-size:12px;line-height:1.45;max-width:700px}.toplinks{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.pill-link,.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:8px 11px;text-decoration:none;
+font-size:11px;font-weight:750;white-space:nowrap}.pill-link:active,.chip:active{transform:scale(.98)}
+.controls{display:grid;grid-template-columns:1fr;gap:9px;margin-top:11px}.search{position:relative}.search input{width:100%;background:#0a1020;color:var(--text);
+border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 38px;font-size:14px;outline:none}.search input:focus{border-color:var(--gold)}
+.search:before{content:"⌕";position:absolute;left:13px;top:8px;color:var(--muted);font-size:20px}.filters{display:flex;gap:7px;overflow:auto;padding-bottom:2px;scrollbar-width:none}
+.chip{background:transparent;color:var(--muted);cursor:pointer}.chip.on{background:var(--gold);border-color:var(--gold);color:#1d1404}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}.metric{background:linear-gradient(180deg,var(--panel2),var(--panel));
+border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}.metric b{font-size:21px;display:block}.metric span{font-size:9px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase}
+.resume{display:none;border:1px solid rgba(244,183,64,.4);background:rgba(244,183,64,.075);border-radius:16px;padding:13px;margin:12px 0}
+.resume.show{display:flex;align-items:center;justify-content:space-between;gap:12px}.resume strong{display:block;font-size:14px}.resume span{font-size:11px;color:var(--muted)}
+.resume button{border:0;border-radius:999px;background:var(--gold);color:#1d1404;font-weight:850;padding:10px 13px;white-space:nowrap}
+.note{font-size:10px;color:var(--muted);line-height:1.45;margin:8px 2px 14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{overflow:hidden;background:linear-gradient(180deg,#0e1629,#090f1d);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.preview{height:160px;position:relative;overflow:hidden;background:
+radial-gradient(120% 100% at 10% 10%,rgba(244,183,64,.18),transparent 55%),
+linear-gradient(135deg,#16213a,#0b1020)}.preview img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.9) contrast(1.03)}
+.preview:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(5,7,14,.88))}
+.visual-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:18px}
+.visual-fallback .big{font-size:48px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.38))}.visual-fallback b{margin-top:8px;font-size:18px}.visual-fallback small{color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.09em}
+.preview-top{position:absolute;left:10px;right:10px;top:10px;z-index:3;display:flex;justify-content:space-between;gap:8px}.logo{
+width:42px;height:42px;border-radius:13px;background:rgba(5,7,14,.82);border:1px solid rgba(255,255,255,.12);display:grid;place-items:center;font-size:22px;
+backdrop-filter:blur(10px)}.state{align-self:flex-start;border:1px solid rgba(255,255,255,.14);background:rgba(5,7,14,.82);backdrop-filter:blur(10px);
+border-radius:999px;padding:6px 8px;font-size:9px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.state.active{color:var(--green)}.state.blocked{color:var(--red)}.state.validate,.state.build,.state.physical,.state.merge{color:var(--orange)}
+.state.archive,.state.legacy,.state.hold,.state.internal{color:var(--muted)}
+.preview-bottom{position:absolute;z-index:3;left:13px;right:13px;bottom:10px}.preview-bottom .family{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold2);font-weight:800}
+.preview-bottom .name{font-size:20px;font-weight:850;line-height:1.05;margin-top:3px;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+.body{padding:14px}.role{font-size:12px;color:var(--muted);line-height:1.4;min-height:34px}.progress-head{display:flex;justify-content:space-between;align-items:center;margin-top:13px;font-size:10px;color:var(--muted)}
+.progress-head b{font-size:12px;color:var(--text)}.bar{height:7px;border-radius:999px;background:#19223a;overflow:hidden;margin-top:6px}.bar>i{display:block;height:100%;
+background:linear-gradient(90deg,#d78f1f,var(--gold2));border-radius:inherit}.block{margin-top:12px;border:1px solid var(--line);background:rgba(255,255,255,.018);border-radius:13px;padding:10px}
+.block .label{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:800}.block p{margin:5px 0 0;font-size:11px;line-height:1.43}
+.block.latest p{color:#dce3f3}.block.next{border-color:rgba(244,183,64,.25);background:rgba(244,183,64,.045)}
+.block.blocker{border-color:rgba(255,110,127,.3);background:rgba(255,110,127,.045)}.block.blocker .label{color:#ff9eaa}
+.time{font-size:9px;color:var(--muted);margin-top:4px}.actions{display:grid;grid-template-columns:1fr auto auto auto;gap:7px;margin-top:12px}
+.action{min-height:42px;border-radius:12px;border:1px solid var(--line);background:#111a2f;color:var(--text);text-decoration:none;display:flex;align-items:center;
+justify-content:center;font-size:10px;font-weight:800;padding:8px 10px;white-space:nowrap}.action.primary{background:var(--gold);color:#1d1404;border-color:var(--gold);font-size:11px}
+.action.disabled{opacity:.35;pointer-events:none}.details{margin-top:9px}.details summary{cursor:pointer;color:var(--muted);font-size:10px;list-style:none}.details summary::-webkit-details-marker{display:none}
+.detail-grid{display:grid;gap:5px;margin-top:8px;font-size:10px;color:var(--muted)}.detail-grid code{font-size:9px;color:#c5cce0;overflow-wrap:anywhere}
+.empty{padding:38px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px;grid-column:1/-1}
+.section-title{display:flex;justify-content:space-between;align-items:flex-end;margin:20px 2px 9px}.section-title h2{font-size:17px;margin:0}.section-title span{font-size:10px;color:var(--muted)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:repeat(3,1fr)}.summary .metric:nth-child(4),.summary .metric:nth-child(5){display:none}
+.preview{height:175px}.brandrow{align-items:center}.toplinks .hide-mobile{display:none}.actions{grid-template-columns:1fr repeat(3,auto)}}
+@media(max-width:430px){.wrap{padding-left:10px;padding-right:10px}.top{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}.title{font-size:24px}
+.action{padding:8px 9px}.preview{height:168px}}
 </style>
 </head>
-<body><div class="wrap">
+<body>
+<div class="wrap">
 <header class="top">
-  <div class="kicker">McLain System · Canonical Portfolio</div>
-  <h1>One product. One home.</h1>
-  <div class="sub">This is the public-safe ownership map. Private state, evidence, credentials and confidential details stay in the authenticated control plane.</div>
-  <div class="actions"><a class="btn" href="/">← System</a><a class="btn" href="/api/logout">Sign out</a></div>
+  <div class="brandrow">
+    <div>
+      <div class="kicker">McLain System · Portfolio Launcher</div>
+      <div class="title">Everything. One screen.</div>
+      <div class="sub">Live apps, code, files, progress, latest activity, blockers and the next move — built for iPhone first.</div>
+    </div>
+    <div class="toplinks">
+      <a class="pill-link" href="/">System</a>
+      <a class="pill-link hide-mobile" href="/api/logout">Sign out</a>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="search"><input id="search" autocomplete="off" placeholder="Search projects, roles, next moves…"></div>
+    <div class="filters" id="filters"></div>
+  </div>
 </header>
+
 <div class="summary" id="summary"></div>
-<div class="rule">Do not create a new repo or deployment for a feature that belongs to an existing product. Jamaica Ops is an OpsPost deployment; Site Sight, ValetOS and Aurora are modules of the Ops family.</div>
-<div class="filters" id="filters"></div>
-<div class="list" id="list"><div class="empty">Loading registry…</div></div>
-<section style="margin-top:24px">
-  <div class="kicker">External blockers</div>
-  <h2 style="font-size:22px;margin:6px 0 4px">What still requires the outside world</h2>
-  <div class="sub" style="margin-bottom:10px">These cannot be truthfully closed by another code commit.</div>
-  <div class="list" id="blockers"><div class="empty">Loading blockers…</div></div>
-</section>
+<div class="resume" id="resume"></div>
+<div class="note">Progress is an execution estimate from the current verified state — not a valuation or claim of market readiness. Archived systems can show 100% because their intended state is “preserved + locked.”</div>
+
+<div class="section-title"><h2>Portfolio</h2><span id="count"></span></div>
+<div class="grid" id="grid"><div class="empty">Loading launcher…</div></div>
 </div>
+
 <script>
-const nice=s=>String(s||'').replaceAll('-',' ').replace(/\b\w/g,m=>m.toUpperCase());
-const cls=s=>{s=String(s||'');if(s.includes('active'))return'active';if(s.includes('blocked'))return'blocked';if(s.includes('merge'))return'merge';if(s.includes('validate'))return'validate';if(s.includes('build'))return'build';if(s.includes('internal'))return'internal';return'hold'};
-let data,filter='all';
-fetch('/data/portfolio.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{data=j;render()}).catch(()=>document.getElementById('list').innerHTML='<div class="empty">Registry unavailable.</div>');
-fetch('/data/blockers.json',{cache:'no-store'}).then(r=>r.json()).then(renderBlockers).catch(()=>document.getElementById('blockers').innerHTML='<div class="empty">Blocker registry unavailable.</div>');
-function renderBlockers(j){
- const rows=j.blockers||[];
- document.getElementById('blockers').innerHTML=rows.map(x=>'<article class="card"><div class="row"><div><div class="name">'+nice(x.system)+'</div><div class="role">'+x.required+'</div></div><div class="state blocked">'+nice(x.kind)+'</div></div></article>').join('')||'<div class="empty">No external blockers recorded.</div>';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const attr=s=>esc(s).replace(/\n/g,' ');
+const nice=s=>String(s??'').replaceAll('-',' ').replace(/\b\w/g,m=>m.toUpperCase());
+const shortDate=iso=>{if(!iso)return'No timestamp';try{return new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(iso))}catch{return iso}};
+const stateClass=s=>{s=String(s||'').toLowerCase();if(s.includes('blocked'))return'blocked';if(s.includes('active'))return'active';if(s.includes('physical'))return'physical';if(s.includes('validate'))return'validate';if(s.includes('build'))return'build';if(s.includes('merge'))return'merge';if(s.includes('archive'))return'archive';if(s.includes('legacy'))return'legacy';if(s.includes('internal'))return'internal';if(s.includes('hold'))return'hold';return''};
+const isArchived=s=>/archive|legacy/.test(String(s.state||''));
+const isBlocked=s=>/blocked/.test(String(s.state||'')) || blockerMap.has(s.id);
+const isWorking=s=>!isArchived(s)&&!/hold/.test(String(s.state||''));
+const bestLink=s=>{
+  const st=String(s.state||'');
+  if(st.includes('physical')) return s.files_url||s.repo_url||s.url||'';
+  if(st.includes('blocked')||st.includes('build')) return s.repo_url||s.url||s.files_url||'';
+  if(st.includes('archive')||st.includes('legacy')) return s.url||s.files_url||s.repo_url||'';
+  return s.url||s.repo_url||s.files_url||'';
+};
+
+let portfolio=null, blockers=[], blockerMap=new Map(), filter='all', query='';
+Promise.all([
+  fetch('/data/portfolio.json',{cache:'no-store'}).then(r=>r.json()),
+  fetch('/data/blockers.json',{cache:'no-store'}).then(r=>r.json())
+]).then(([p,b])=>{
+  portfolio=p; blockers=b.blockers||[];
+  for(const x of blockers){
+    const key=String(x.system||'').split('-rvbt')[0];
+    if(!blockerMap.has(key)) blockerMap.set(key,[]);
+    blockerMap.get(key).push(x);
+  }
+  init();
+}).catch(e=>{
+  document.getElementById('grid').innerHTML='<div class="empty">Launcher data unavailable. Reload the page.</div>';
+});
+
+function init(){
+  const families=[...new Set(portfolio.systems.map(x=>x.family).filter(Boolean))];
+  const filters=['all','working','blocked','hardware',...families.filter(x=>x!=='hardware'),'archive'];
+  const seen=[];
+  for(const f of filters) if(!seen.includes(f)) seen.push(f);
+  document.getElementById('filters').innerHTML=seen.map(f=>'<button class="chip '+(f===filter?'on':'')+'" data-f="'+attr(f)+'">'+esc(f==='all'?'All':nice(f))+'</button>').join('');
+  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.f;render()});
+  document.getElementById('search').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();renderCards()});
+  render();
+  renderResume();
 }
 function render(){
- const systems=data.systems||[]; const fam=[...new Set(systems.map(x=>x.family))];
- const counts={systems:systems.length,active:systems.filter(x=>String(x.state).includes('active')).length,blocked:systems.filter(x=>String(x.state).includes('blocked')).length,merge:systems.filter(x=>/merge|legacy/.test(String(x.state))).length};
- document.getElementById('summary').innerHTML=[['Systems',counts.systems],['Active',counts.active],['Blocked',counts.blocked],['Merge/legacy',counts.merge]].map(([l,v])=>'<div class="metric"><b>'+v+'</b><span>'+l+'</span></div>').join('');
- document.getElementById('filters').innerHTML=['all',...fam].map(f=>'<button class="filter '+(filter===f?'on':'')+'" data-f="'+f+'">'+nice(f)+'</button>').join('');
- document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{filter=b.dataset.f;render()});
- const rows=systems.filter(x=>filter==='all'||x.family===filter);
- document.getElementById('list').innerHTML=rows.map(x=>'<article class="card"><div class="row"><div><div class="name">'+nice(x.id)+'</div><div class="role">'+x.role+'</div></div><div class="state '+cls(x.state)+'">'+nice(x.state)+'</div></div><div class="meta"><span class="tag">'+nice(x.family)+'</span>'+(x.canonical_parent?'<span class="tag">Parent: '+nice(x.canonical_parent)+'</span>':'')+(x.vercel_project?'<span class="tag">Vercel: '+x.vercel_project+'</span>':'')+'</div>'+(x.url?'<a class="open" href="'+x.url+'" target="_blank" rel="noreferrer">Open live surface ↗</a>':'')+'</article>').join('')||'<div class="empty">Nothing in this family.</div>';
+  document.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',b.dataset.f===filter));
+  const systems=portfolio.systems||[];
+  const live=systems.filter(s=>s.url).length;
+  const blocked=systems.filter(isBlocked).length;
+  const hardware=systems.filter(s=>s.family==='hardware').length;
+  const archived=systems.filter(isArchived).length;
+  document.getElementById('summary').innerHTML=[
+    ['Systems',systems.length],['Live',live],['Blocked',blocked],['Hardware',hardware],['Archived',archived]
+  ].map(([l,v])=>'<div class="metric"><b>'+v+'</b><span>'+l+'</span></div>').join('');
+  renderCards();
 }
-</script></body></html>
+function matchesFilter(s){
+  if(filter==='all')return true;
+  if(filter==='working')return isWorking(s);
+  if(filter==='blocked')return isBlocked(s);
+  if(filter==='archive')return isArchived(s);
+  return s.family===filter;
+}
+function matchesQuery(s){
+  if(!query)return true;
+  return [s.id,s.title,s.family,s.role,s.state,s.latest_activity,s.next_action,s.files_path].some(v=>String(v||'').toLowerCase().includes(query));
+}
+function linkButton(url,label,cls=''){
+  return url?'<a class="action '+cls+'" href="'+attr(url)+'" target="_blank" rel="noreferrer">'+esc(label)+'</a>':'<span class="action disabled">'+esc(label)+'</span>';
+}
+function renderCards(){
+  const rows=(portfolio.systems||[]).filter(matchesFilter).filter(matchesQuery).sort((a,b)=>(a.priority??999)-(b.priority??999));
+  document.getElementById('count').textContent=rows.length+' shown';
+  if(!rows.length){document.getElementById('grid').innerHTML='<div class="empty">No projects match that filter.</div>';return}
+  document.getElementById('grid').innerHTML=rows.map(card).join('');
+  document.querySelectorAll('[data-continue]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.continue, s=portfolio.systems.find(x=>x.id===id), url=bestLink(s);
+    if(!url)return;
+    localStorage.setItem('mclain:last-project',JSON.stringify({id,at:new Date().toISOString(),url}));
+    renderResume();
+    window.open(url,'_blank','noopener');
+  });
+}
+function card(s){
+  const bl=(blockerMap.get(s.id)||[]).map(x=>x.required);
+  const progress=Math.max(0,Math.min(100,Number(s.progress||0)));
+  const st=stateClass(s.state);
+  const image=s.screenshot_url
+    ?'<img src="'+attr(s.screenshot_url)+'" alt="'+attr((s.title||s.id)+' screenshot')+'" loading="lazy" onerror="this.remove()">'
+    :'';
+  const target=bestLink(s);
+  return '<article class="card">'+
+    '<div class="preview">'+
+      '<div class="visual-fallback"><div class="big">'+esc(s.icon||'◼︎')+'</div><b>'+esc(s.title||nice(s.id))+'</b><small>'+esc(nice(s.family||'project'))+'</small></div>'+
+      image+
+      '<div class="preview-top"><div class="logo">'+esc(s.icon||'◼︎')+'</div><div class="state '+st+'">'+esc(nice(s.state||'unknown'))+'</div></div>'+
+      '<div class="preview-bottom"><div class="family">'+esc(nice(s.family||'project'))+'</div><div class="name">'+esc(s.title||nice(s.id))+'</div></div>'+
+    '</div>'+
+    '<div class="body">'+
+      '<div class="role">'+esc(s.role||'')+'</div>'+
+      '<div class="progress-head"><span>Execution progress</span><b>'+progress+'%</b></div>'+
+      '<div class="bar"><i style="width:'+progress+'%"></i></div>'+
+      '<div class="block latest"><div class="label">Latest activity</div><p>'+esc(s.latest_activity||'No activity note yet.')+'</p><div class="time">'+esc(shortDate(s.last_activity))+'</div></div>'+
+      '<div class="block next"><div class="label">Next move</div><p>'+esc(s.next_action||'No next action recorded.')+'</p></div>'+
+      (bl.length?'<div class="block blocker"><div class="label">External blocker</div><p>'+esc(bl.join(' • '))+'</p></div>':'')+
+      '<div class="actions">'+
+        (target?'<button class="action primary" data-continue="'+attr(s.id)+'">CONTINUE WORK</button>':'<span class="action primary disabled">NO TARGET</span>')+
+        linkButton(s.url,'OPEN')+
+        linkButton(s.repo_url||(s.repo?'https://github.com/'+s.repo:''),'CODE')+
+        linkButton(s.files_url,'FILES')+
+      '</div>'+
+      '<details class="details"><summary>Details + source paths</summary><div class="detail-grid">'+
+        '<div>State: <code>'+esc(s.state||'')+'</code></div>'+
+        (s.repo?'<div>Repo: <code>'+esc(s.repo)+'</code></div>':'')+
+        (s.vercel_project?'<div>Vercel: <code>'+esc(s.vercel_project)+'</code></div>':'')+
+        (s.files_path?'<div>Files: <code>'+esc(s.files_path)+'</code></div>':'')+
+        (s.canonical_parent?'<div>Canonical parent: <code>'+esc(s.canonical_parent)+'</code></div>':'')+
+      '</div></details>'+
+    '</div>'+
+  '</article>';
+}
+function renderResume(){
+  const el=document.getElementById('resume');
+  let rec=null;try{rec=JSON.parse(localStorage.getItem('mclain:last-project')||'null')}catch{}
+  if(!rec||!portfolio){el.className='resume';el.innerHTML='';return}
+  const s=portfolio.systems.find(x=>x.id===rec.id);
+  if(!s){el.className='resume';return}
+  el.className='resume show';
+  el.innerHTML='<div><strong>Resume '+esc(s.title||nice(s.id))+'</strong><span>Last opened '+esc(shortDate(rec.at))+'</span></div><button id="resumeBtn">Continue →</button>';
+  document.getElementById('resumeBtn').onclick=()=>{const url=bestLink(s);if(url)window.open(url,'_blank','noopener')};
+}
+</script>
+</body>
+</html>
