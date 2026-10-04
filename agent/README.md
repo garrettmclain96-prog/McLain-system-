@@ -24,3 +24,7 @@ V1 intentionally does not claim external side effects. The execution worker prod
 4. Event triggers / scheduled recurring missions
 5. Multi-worker delegation and artifact storage
 6. Notifications for blockers, approvals, and completed missions
+
+## Deployment
+
+The Agent OS deploys as its own Vercel project from the `agent/` root. Vercel Authentication protects the project deployment, and Vercel OIDC provides AI Gateway credentials to the runtime.
