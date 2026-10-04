@@ -1,5 +1,5 @@
 import { start } from 'workflow/api';
-import { planMissionWorkflow } from '../../../../workflows/mission.js';
+import { planMissionWorkflow } from '../../../workflows/mission.js';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
