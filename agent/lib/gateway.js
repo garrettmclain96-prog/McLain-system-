@@ -68,11 +68,49 @@ export function parseJsonObject(text) {
     return JSON.parse(clean);
   } catch {}
 
-  const start = clean.indexOf('{');
-  const end = clean.lastIndexOf('}');
-  if (start >= 0 && end > start) {
+  const candidates = [];
+  let objectStart = -1;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < clean.length; i += 1) {
+    const ch = clean[i];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (ch === '\\') {
+        escaped = true;
+      } else if (ch === '"') {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = true;
+      continue;
+    }
+
+    if (ch === '{') {
+      if (depth === 0) objectStart = i;
+      depth += 1;
+      continue;
+    }
+
+    if (ch === '}' && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && objectStart >= 0) {
+        candidates.push(clean.slice(objectStart, i + 1));
+        objectStart = -1;
+      }
+    }
+  }
+
+  for (let i = candidates.length - 1; i >= 0; i -= 1) {
     try {
-      return JSON.parse(clean.slice(start, end + 1));
+      return JSON.parse(candidates[i]);
     } catch {}
   }
 
