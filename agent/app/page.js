@@ -287,7 +287,7 @@ export default function Home() {
                 </div>
                 <div className="field">
                   <label>Worker</label>
-                  <div className="input" aria-label="worker model">GPT-5.6 Sol · Gateway</div>
+                  <div className="input" aria-label="worker model">Auto · free-credit Gateway</div>
                 </div>
               </div>
 
