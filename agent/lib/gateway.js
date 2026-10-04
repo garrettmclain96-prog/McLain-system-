@@ -1,7 +1,7 @@
 import { getVercelOidcToken } from '@vercel/oidc';
 
 const GATEWAY_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
-const DEFAULT_MODEL = 'openai/gpt-5.6-sol';
+const DEFAULT_MODELS = ['deepseek/deepseek-v4.1-flash', 'poolside/laguna-s-2.1-free', 'inclusionai/ling-3.0-flash-sante-free'];
 
 function extractText(data) {
   return data?.choices?.[0]?.message?.content?.trim() || '';
@@ -16,33 +16,46 @@ export async function askGateway(messages, options = {}) {
     throw new Error('AI Gateway authentication is unavailable for this deployment.');
   }
 
-  const model = process.env.MCLAIN_AGENT_MODEL || DEFAULT_MODEL;
-  const response = await fetch(GATEWAY_URL, {
-    method: 'POST',
-    headers: {
-      authorization: 'Bearer ' + token,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      messages,
-      max_completion_tokens: options.maxTokens || 3000,
-    }),
-  });
+  const configured = process.env.MCLAIN_AGENT_MODEL;
+  const models = configured ? [configured] : DEFAULT_MODELS;
+  let lastError = 'No AI Gateway model was available.';
 
-  let data = null;
-  try {
-    data = await response.json();
-  } catch {}
+  for (const model of models) {
+    const response = await fetch(GATEWAY_URL, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer ' + token,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        max_completion_tokens: options.maxTokens || 3000,
+      }),
+    });
 
-  if (!response.ok) {
-    const detail = data?.error?.message || ('Gateway returned HTTP ' + response.status);
-    throw new Error(detail);
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {}
+
+    if (!response.ok) {
+      lastError = data?.error?.message || ('Gateway returned HTTP ' + response.status);
+      if (configured) break;
+      continue;
+    }
+
+    const text = extractText(data);
+    if (!text) {
+      lastError = 'The agent model returned an empty response.';
+      if (configured) break;
+      continue;
+    }
+
+    return { text, model: data?.model || model };
   }
 
-  const text = extractText(data);
-  if (!text) throw new Error('The agent model returned an empty response.');
-  return { text, model: data?.model || model };
+  throw new Error(lastError);
 }
 
 export function parseJsonObject(text) {
