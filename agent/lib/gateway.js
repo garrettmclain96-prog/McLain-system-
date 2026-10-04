@@ -1,3 +1,5 @@
+import { getVercelOidcToken } from '@vercel/oidc';
+
 const GATEWAY_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
 const DEFAULT_MODEL = 'openai/gpt-5.6-sol';
 
@@ -6,7 +8,10 @@ function extractText(data) {
 }
 
 export async function askGateway(messages, options = {}) {
-  const token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
+  let token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
+  if (!token) {
+    try { token = await getVercelOidcToken(); } catch {}
+  }
   if (!token) {
     throw new Error('AI Gateway authentication is unavailable for this deployment.');
   }
