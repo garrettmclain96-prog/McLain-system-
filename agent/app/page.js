@@ -56,6 +56,8 @@ export default function Home() {
   const [launching, setLaunching] = useState(false);
   const [syncState, setSyncState] = useState('Connecting…');
   const [showPolicy, setShowPolicy] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(true);
+  const [guideChoice, setGuideChoice] = useState('');
   const saveTimer = useRef(null);
   const hydrating = useRef(true);
 
@@ -123,6 +125,79 @@ export default function Home() {
   const addMission = useCallback((mission) => {
     setMissions((current) => [mission, ...current].slice(0, 100));
   }, []);
+
+  const missionStarters = [
+    {
+      id: 'build',
+      icon: '🛠️',
+      title: 'Build or improve something',
+      blurb: 'Turn an idea or existing project into an execution plan and finished work.',
+      project: 'McLain OS',
+      goal: 'Review the project context I provide, identify the highest-impact improvement, build the exact implementation plan, produce every artifact you can complete autonomously, and clearly separate anything that needs my approval.',
+      mode: 'review',
+      recurrence: 'none',
+    },
+    {
+      id: 'audit',
+      icon: '🔎',
+      title: 'Audit a project',
+      blurb: 'Find bugs, weak spots, unfinished work, and the best next moves.',
+      project: 'ValetOS',
+      goal: 'Audit this project end-to-end. Find broken, incomplete, confusing, risky, or low-quality areas. Rank fixes by impact, then produce the exact remediation work and next actions.',
+      mode: 'auto',
+      recurrence: 'none',
+    },
+    {
+      id: 'research',
+      icon: '🧠',
+      title: 'Research + decide',
+      blurb: 'Investigate a question and return a decision, not a pile of links.',
+      project: 'Research',
+      goal: 'Research this objective deeply, compare the realistic options, identify tradeoffs and risks, then give me a clear recommendation with the evidence and an execution-ready next step.',
+      mode: 'auto',
+      recurrence: 'none',
+    },
+    {
+      id: 'operator',
+      icon: '⚙️',
+      title: 'Run an operating routine',
+      blurb: 'Have Agent OS revisit something every day and surface what changed.',
+      project: 'Operations',
+      goal: 'Review the current operating context, identify what changed or needs attention, prioritize the most important actions, and produce a concise operator brief with work completed, blockers, and next actions.',
+      mode: 'auto',
+      recurrence: 'daily',
+    },
+    {
+      id: 'finish',
+      icon: '🏁',
+      title: 'Finish unfinished work',
+      blurb: 'Give it a messy project and have it drive toward a shippable result.',
+      project: 'General',
+      goal: 'Take this unfinished project from its current state toward a shippable result. Determine what is missing, complete everything you can autonomously, and return only the decisions or approvals that truly require me.',
+      mode: 'review',
+      recurrence: 'none',
+    },
+    {
+      id: 'watch',
+      icon: '📡',
+      title: 'Watch something weekly',
+      blurb: 'Recurring intelligence for a project, market, competitor, or opportunity.',
+      project: 'Watch',
+      goal: 'Reassess this subject using the latest available context, identify meaningful changes, opportunities, risks, and decisions since the previous run, and give me only what is actionable.',
+      mode: 'auto',
+      recurrence: 'weekly',
+    },
+  ];
+
+  function chooseStarter(starter) {
+    setGuideChoice(starter.id);
+    setProject(starter.project);
+    setGoal(starter.goal);
+    setMode(starter.mode);
+    setRecurrence(starter.recurrence);
+    setGuideOpen(false);
+    setTimeout(() => document.getElementById('goal')?.focus(), 0);
+  }
 
   async function postMission(payload) {
     const response = await fetch('/api/mission', {
@@ -318,6 +393,33 @@ export default function Home() {
             <h2>Dispatch a mission</h2>
             <p className="sub">Plan, execute, persist, and recur from the server. Closing Safari no longer owns the mission state.</p>
 
+            {guideOpen ? (
+              <div className="guide">
+                <div className="guideTitle">
+                  <div>
+                    <span className="badge review">Start here</span>
+                    <h3>What do you want Agent OS to do?</h3>
+                    <p>Pick a job. I’ll preconfigure the mission, autonomy, and recurrence; then edit the details before launch.</p>
+                  </div>
+                  <button className="btn" type="button" onClick={() => setGuideOpen(false)}>I know what I want</button>
+                </div>
+                <div className="starterGrid">
+                  {missionStarters.map((starter) => (
+                    <button className="starter" type="button" key={starter.id} onClick={() => chooseStarter(starter)}>
+                      <span className="starterIcon">{starter.icon}</span>
+                      <span><b>{starter.title}</b><small>{starter.blurb}</small></span>
+                      <span className="starterArrow">›</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="guideHint"><b>Best way to use it:</b> give it an outcome, not a tiny task. “Finish the customer checkout” is better than “write CSS.”</div>
+              </div>
+            ) : (
+              <button className="btn guideReopen" type="button" onClick={() => setGuideOpen(true)}>
+                ✨ Show me what Agent OS can do
+              </button>
+            )}
+
             <form onSubmit={launchMission}>
               <div className="field">
                 <label htmlFor="project">Project / operating area</label>
@@ -374,6 +476,12 @@ export default function Home() {
                       </select>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {guideChoice && (
+                <div className="guideHint selectedHint">
+                  Template loaded. Replace the generic wording with the actual project/outcome you want, add useful context below, then launch.
                 </div>
               )}
 
