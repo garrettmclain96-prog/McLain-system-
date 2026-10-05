@@ -23,6 +23,7 @@ export async function POST(request) {
   const goal = clean(body.goal, MAX_GOAL);
   const project = clean(body.project, 120) || 'General';
   const memory = clean(body.memory, MAX_MEMORY);
+  const toolPolicy = body.toolPolicy && typeof body.toolPolicy === 'object' ? body.toolPolicy : {};
 
   if (!goal) {
     return Response.json({ error: 'goal_required' }, { status: 400 });
@@ -30,7 +31,7 @@ export async function POST(request) {
 
   try {
     if (action === 'plan') {
-      const run = await start(planMissionWorkflow, [{ goal, project, memory }]);
+      const run = await start(planMissionWorkflow, [{ goal, project, memory, toolPolicy }]);
       return Response.json({ runId: run.runId, phase: 'planning' }, { status: 202 });
     }
 
@@ -45,6 +46,7 @@ export async function POST(request) {
         memory,
         plan: body.plan,
         approvalNote,
+        toolPolicy,
       }]);
       return Response.json({ runId: run.runId, phase: 'executing' }, { status: 202 });
     }
