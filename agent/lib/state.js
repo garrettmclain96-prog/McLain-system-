@@ -1,4 +1,4 @@
-import { get, list, put } from '@vercel/blob';
+import { list, put } from '@vercel/blob';
 
 const STATE_PATH = 'agent-os/state-v2.json';
 const EMPTY_STATE = {
@@ -30,10 +30,13 @@ export async function loadAgentState() {
   const blob = result.blobs.find((item) => item.pathname === STATE_PATH);
   if (!blob) return structuredClone(EMPTY_STATE);
 
-  const file = await get(blob.url, { access: 'private', ...opts });
-  if (!file) return structuredClone(EMPTY_STATE);
+  const response = await fetch(blob.url, {
+    headers: { authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN },
+    cache: 'no-store',
+  });
+  if (!response.ok) return structuredClone(EMPTY_STATE);
 
-  const text = await new Response(file.stream).text();
+  const text = await response.text();
   let parsed = {};
   try { parsed = JSON.parse(text); } catch {}
 
