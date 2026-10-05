@@ -22,6 +22,7 @@ async function planMissionStep(input) {
     'PROJECT: ' + (input.project || 'General'),
     'MISSION: ' + input.goal,
     input.memory ? 'PERSISTENT CONTEXT:\n' + input.memory : '',
+    input.toolPolicy ? 'ACTION POLICY:\n' + JSON.stringify(input.toolPolicy, null, 2) : '',
   ].filter(Boolean).join('\n\n');
 
   const result = await askGateway([
@@ -88,6 +89,7 @@ async function executeMissionStep(input) {
     'APPROVED PLAN:\n' + JSON.stringify(input.plan || {}, null, 2),
     input.memory ? 'PERSISTENT CONTEXT:\n' + input.memory : '',
     input.approvalNote ? 'OWNER APPROVAL NOTE:\n' + input.approvalNote : '',
+    input.toolPolicy ? 'ACTION POLICY:\n' + JSON.stringify(input.toolPolicy, null, 2) : '',
   ].filter(Boolean).join('\n\n');
 
   const result = await askGateway([
