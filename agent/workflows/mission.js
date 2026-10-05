@@ -51,6 +51,22 @@ export async function executeMissionWorkflow(input) {
   return await executeMissionStep(input);
 }
 
+export async function scheduledMissionWorkflow(input) {
+  'use workflow';
+  const planned = await planMissionStep(input);
+  const executed = await executeMissionStep({
+    ...input,
+    plan: planned.plan,
+    approvalNote: 'Recurring mission auto-approved for AI-only execution. External writes, deploys, sends, purchases, or destructive actions still require owner approval.',
+  });
+  return {
+    kind: 'scheduled_mission_result',
+    planned,
+    executed,
+    completedAt: new Date().toISOString(),
+  };
+}
+
 async function executeMissionStep(input) {
   'use step';
 
@@ -60,8 +76,10 @@ async function executeMissionStep(input) {
     'Produce concrete reusable output, not generic advice.',
     'Do not pretend that emails were sent, files were changed, purchases were made, deployments happened, or other external actions occurred unless the supplied context explicitly proves they occurred.',
     'When an external action is required, put it in blockedOn and provide the exact next action.',
+    'Classify any requested external side effect into actionRequests instead of pretending it happened.',
+    'External side effects include writes to repositories, deployments, sending email/messages, purchases, deletions, account changes, or publishing.',
     'Return ONLY valid JSON with this shape:',
-    '{"summary":"...","workProduct":"markdown...","completed":["..."],"blockedOn":["..."],"nextActions":["..."],"assetsToCreate":["..."]}'
+    '{"summary":"...","workProduct":"markdown...","completed":["..."],"blockedOn":["..."],"nextActions":["..."],"assetsToCreate":["..."],"actionRequests":[{"type":"github_write|deploy|email_send|browser_action|account_change|purchase|delete|publish|other","description":"...","requiresApproval":true,"status":"pending"}]}'
   ].join('\n');
 
   const user = [
@@ -89,6 +107,7 @@ async function executeMissionStep(input) {
       blockedOn: [],
       nextActions: [],
       assetsToCreate: [],
+      actionRequests: [],
     },
   };
 }
