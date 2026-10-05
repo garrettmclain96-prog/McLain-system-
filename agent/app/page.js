@@ -1,18 +1,25 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-const MISSION_STORE = 'mclain-agent-missions-v1';
-const MEMORY_STORE = 'mclain-agent-memory-v1';
-const PROJECT_STORE = 'mclain-agent-project-v1';
+const CACHE_KEY = 'mclain-agent-state-v2';
+const DEFAULT_POLICY = {
+  research: 'auto',
+  externalRead: 'auto',
+  externalWrite: 'approval',
+  deploy: 'approval',
+  emailSend: 'approval',
+};
 
-function loadJson(key, fallback) {
-  if (typeof window === 'undefined') return fallback;
-  try {
-    return JSON.parse(localStorage.getItem(key) || '') || fallback;
-  } catch {
-    return fallback;
-  }
+function cachedState() {
+  if (typeof window === 'undefined') return null;
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch { return null; }
+}
+
+function recurrenceDelay(value) {
+  if (value === 'weekly') return 7 * 24 * 60 * 60 * 1000;
+  if (value === 'daily') return 24 * 60 * 60 * 1000;
+  return 0;
 }
 
 function statusClass(status) {
@@ -25,7 +32,7 @@ function statusClass(status) {
 }
 
 function statusLabel(status) {
-  const labels = {
+  return ({
     planning: 'Planning',
     review: 'Needs approval',
     launching: 'Starting',
@@ -33,8 +40,8 @@ function statusLabel(status) {
     completed: 'Complete',
     failed: 'Failed',
     canceled: 'Canceled',
-  };
-  return labels[status] || status || 'Queued';
+    scheduled: 'Scheduled',
+  })[status] || status || 'Queued';
 }
 
 export default function Home() {
@@ -42,27 +49,70 @@ export default function Home() {
   const [project, setProject] = useState('General');
   const [memory, setMemory] = useState('');
   const [mode, setMode] = useState('review');
+  const [recurrence, setRecurrence] = useState('none');
   const [missions, setMissions] = useState([]);
+  const [toolPolicy, setToolPolicy] = useState(DEFAULT_POLICY);
   const [ready, setReady] = useState(false);
   const [launching, setLaunching] = useState(false);
+  const [syncState, setSyncState] = useState('Connecting…');
+  const [showPolicy, setShowPolicy] = useState(false);
+  const saveTimer = useRef(null);
+  const hydrating = useRef(true);
 
   useEffect(() => {
-    setMissions(loadJson(MISSION_STORE, []));
-    setMemory(localStorage.getItem(MEMORY_STORE) || '');
-    setProject(localStorage.getItem(PROJECT_STORE) || 'General');
-    setReady(true);
+    let cancelled = false;
+    async function hydrate() {
+      const cache = cachedState();
+      if (cache && !cancelled) {
+        setMissions(Array.isArray(cache.missions) ? cache.missions : []);
+        setMemory(cache.memory || '');
+        setProject(cache.project || 'General');
+        setToolPolicy({ ...DEFAULT_POLICY, ...(cache.toolPolicy || {}) });
+      }
+
+      try {
+        const response = await fetch('/api/state', { cache: 'no-store' });
+        const state = await response.json();
+        if (!response.ok) throw new Error(state.message || 'Cloud state unavailable.');
+        if (!cancelled) {
+          setMissions(Array.isArray(state.missions) ? state.missions : []);
+          setMemory(state.memory || '');
+          setProject(state.project || 'General');
+          setToolPolicy({ ...DEFAULT_POLICY, ...(state.toolPolicy || {}) });
+          localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+          setSyncState('Private cloud synced');
+        }
+      } catch {
+        if (!cancelled) setSyncState(cache ? 'Using device cache' : 'Cloud sync unavailable');
+      } finally {
+        hydrating.current = false;
+        if (!cancelled) setReady(true);
+      }
+    }
+    hydrate();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
-    localStorage.setItem(MISSION_STORE, JSON.stringify(missions.slice(0, 40)));
-  }, [missions, ready]);
-
-  useEffect(() => {
-    if (!ready) return;
-    localStorage.setItem(MEMORY_STORE, memory);
-    localStorage.setItem(PROJECT_STORE, project);
-  }, [memory, project, ready]);
+    if (!ready || hydrating.current) return undefined;
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      const payload = { missions: missions.slice(0, 100), memory, project, toolPolicy };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+      try {
+        const response = await fetch('/api/state', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error();
+        setSyncState('Private cloud synced');
+      } catch {
+        setSyncState('Device saved · cloud retry needed');
+      }
+    }, 700);
+    return () => clearTimeout(saveTimer.current);
+  }, [missions, memory, project, toolPolicy, ready]);
 
   const patchMission = useCallback((id, changes) => {
     setMissions((current) => current.map((m) => (
@@ -71,7 +121,7 @@ export default function Home() {
   }, []);
 
   const addMission = useCallback((mission) => {
-    setMissions((current) => [mission, ...current].slice(0, 40));
+    setMissions((current) => [mission, ...current].slice(0, 100));
   }, []);
 
   async function postMission(payload) {
@@ -95,6 +145,7 @@ export default function Home() {
         memory: mission.memory,
         plan: approvedPlan,
         approvalNote,
+        toolPolicy,
       });
       patchMission(mission.id, {
         status: 'executing',
@@ -107,25 +158,29 @@ export default function Home() {
         error: error instanceof Error ? error.message : 'Execution could not start.',
       });
     }
-  }, [patchMission]);
+  }, [patchMission, toolPolicy]);
 
   async function launchMission(event) {
     event.preventDefault();
     const cleanGoal = goal.trim();
     if (!cleanGoal || launching) return;
 
-    const id = crypto.randomUUID();
+    const recurring = ['daily','weekly'].includes(recurrence);
+    const now = new Date();
     const mission = {
-      id,
+      id: crypto.randomUUID(),
       goal: cleanGoal,
       project: project.trim() || 'General',
       memory: memory.trim(),
-      mode,
+      mode: recurring ? 'auto' : mode,
+      recurrence,
+      nextRunAt: recurring ? new Date(now.getTime() + recurrenceDelay(recurrence)).toISOString() : null,
       status: 'planning',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
       planRunId: '',
       executeRunId: '',
+      scheduledRunId: '',
       plan: null,
       result: null,
       error: '',
@@ -141,10 +196,11 @@ export default function Home() {
         goal: mission.goal,
         project: mission.project,
         memory: mission.memory,
+        toolPolicy,
       });
-      patchMission(id, { planRunId: data.runId, status: 'planning' });
+      patchMission(mission.id, { planRunId: data.runId, status: 'planning' });
     } catch (error) {
-      patchMission(id, {
+      patchMission(mission.id, {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Planning could not start.',
       });
@@ -154,9 +210,9 @@ export default function Home() {
   }
 
   const pollMission = useCallback(async (mission) => {
-    const runId = mission.status === 'planning' ? mission.planRunId
-      : mission.status === 'executing' ? mission.executeRunId
-      : '';
+    let runId = '';
+    if (mission.status === 'planning') runId = mission.planRunId;
+    if (mission.status === 'executing') runId = mission.scheduledRunId || mission.executeRunId;
     if (!runId) return;
 
     try {
@@ -165,13 +221,9 @@ export default function Home() {
       if (!response.ok) throw new Error(data.message || data.error || 'Run lookup failed.');
 
       if (data.status === 'failed' || data.status === 'canceled') {
-        patchMission(mission.id, {
-          status: data.status,
-          error: 'Workflow ended with status: ' + data.status,
-        });
+        patchMission(mission.id, { status: data.status, error: 'Workflow ended with status: ' + data.status });
         return;
       }
-
       if (data.status !== 'completed') return;
 
       if (mission.status === 'planning') {
@@ -183,7 +235,7 @@ export default function Home() {
 
         if (mission.mode === 'auto') {
           patchMission(mission.id, { status: 'launching', plan, planModel: data.value?.model || '' });
-          await startExecution({ ...mission, plan }, plan, 'Auto-approved by mission mode.');
+          await startExecution({ ...mission, plan }, plan, 'Auto-approved for AI-only execution. External side effects still require approval.');
         } else {
           patchMission(mission.id, { status: 'review', plan, planModel: data.value?.model || '' });
         }
@@ -191,24 +243,32 @@ export default function Home() {
       }
 
       if (mission.status === 'executing') {
-        patchMission(mission.id, {
-          status: 'completed',
-          result: data.value?.result || data.value || null,
-          resultModel: data.value?.model || '',
-          completedAt: data.value?.completedAt || new Date().toISOString(),
-        });
+        if (data.value?.kind === 'scheduled_mission_result') {
+          patchMission(mission.id, {
+            status: 'completed',
+            plan: data.value?.planned?.plan || mission.plan,
+            result: data.value?.executed?.result || null,
+            resultModel: data.value?.executed?.model || '',
+            scheduledRunId: '',
+            completedAt: data.value?.completedAt || new Date().toISOString(),
+          });
+        } else {
+          patchMission(mission.id, {
+            status: 'completed',
+            result: data.value?.result || data.value || null,
+            resultModel: data.value?.model || '',
+            completedAt: data.value?.completedAt || new Date().toISOString(),
+          });
+        }
       }
     } catch (error) {
-      patchMission(mission.id, {
-        error: error instanceof Error ? error.message : 'Unable to refresh workflow state.',
-      });
+      patchMission(mission.id, { error: error instanceof Error ? error.message : 'Unable to refresh workflow state.' });
     }
   }, [patchMission, startExecution]);
 
   useEffect(() => {
     if (!ready) return undefined;
     let stopped = false;
-
     async function tick() {
       const active = missions.filter((m) => m.status === 'planning' || m.status === 'executing');
       for (const mission of active) {
@@ -216,30 +276,27 @@ export default function Home() {
         await pollMission(mission);
       }
     }
-
     tick();
-    const timer = setInterval(tick, 4000);
-    return () => {
-      stopped = true;
-      clearInterval(timer);
-    };
+    const timer = setInterval(tick, 5000);
+    return () => { stopped = true; clearInterval(timer); };
   }, [missions, pollMission, ready]);
 
-  const stats = useMemo(() => {
-    const active = missions.filter((m) => ['planning', 'launching', 'executing'].includes(m.status)).length;
-    const waiting = missions.filter((m) => m.status === 'review').length;
-    const done = missions.filter((m) => m.status === 'completed').length;
-    return { active, waiting, done };
-  }, [missions]);
+  const stats = useMemo(() => ({
+    active: missions.filter((m) => ['planning','launching','executing'].includes(m.status)).length,
+    waiting: missions.filter((m) => m.status === 'review').length,
+    recurring: missions.filter((m) => ['daily','weekly'].includes(m.recurrence)).length,
+  }), [missions]);
+
+  function stopRecurrence(id) {
+    patchMission(id, { recurrence: 'none', nextRunAt: null });
+  }
 
   function removeMission(id) {
     setMissions((current) => current.filter((m) => m.id !== id));
   }
 
   async function copyWork(text) {
-    try {
-      await navigator.clipboard.writeText(text || '');
-    } catch {}
+    try { await navigator.clipboard.writeText(text || ''); } catch {}
   }
 
   return (
@@ -252,14 +309,14 @@ export default function Home() {
             <h1>Agent OS · Mission Control</h1>
           </div>
         </div>
-        <div className="live"><i /> Durable runtime</div>
+        <div className="live"><i /> {syncState}</div>
       </header>
 
       <div className="grid">
         <section className="card">
           <div className="cardpad">
             <h2>Dispatch a mission</h2>
-            <p className="sub">Plan it, approve it, then let a durable workflow execute the work session without depending on this browser staying open.</p>
+            <p className="sub">Plan, execute, persist, and recur from the server. Closing Safari no longer owns the mission state.</p>
 
             <form onSubmit={launchMission}>
               <div className="field">
@@ -269,32 +326,61 @@ export default function Home() {
 
               <div className="field">
                 <label htmlFor="goal">Mission</label>
-                <textarea id="goal" className="textarea" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Example: Audit the current ValetOS launch flow, identify the three biggest conversion blockers, and produce the exact implementation plan." maxLength={12000} required />
+                <textarea id="goal" className="textarea" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Example: Audit ValetOS, identify the three biggest blockers, and produce the exact fixes." maxLength={12000} required />
               </div>
 
               <div className="field">
-                <label htmlFor="memory">Persistent context for this device</label>
-                <textarea id="memory" className="textarea memory" value={memory} onChange={(e) => setMemory(e.target.value)} placeholder="Rules, project state, priorities, constraints, preferred output…" maxLength={18000} />
+                <label htmlFor="memory">Persistent cross-device context</label>
+                <textarea id="memory" className="textarea memory" value={memory} onChange={(e) => setMemory(e.target.value)} placeholder="Rules, project state, priorities, constraints, preferred output…" maxLength={30000} />
               </div>
 
               <div className="split">
                 <div className="field">
                   <label htmlFor="mode">Autonomy</label>
-                  <select id="mode" className="select" value={mode} onChange={(e) => setMode(e.target.value)}>
+                  <select id="mode" className="select" value={mode} onChange={(e) => setMode(e.target.value)} disabled={recurrence !== 'none'}>
                     <option value="review">Plan → ask me → execute</option>
                     <option value="auto">Plan → execute automatically</option>
                   </select>
                 </div>
                 <div className="field">
-                  <label>Worker</label>
-                  <div className="input" aria-label="worker model">Auto · free-credit Gateway</div>
+                  <label htmlFor="recurrence">Run</label>
+                  <select id="recurrence" className="select" value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+                    <option value="none">Once</option>
+                    <option value="daily">Now + every day</option>
+                    <option value="weekly">Now + every week</option>
+                  </select>
                 </div>
               </div>
+
+              <button className="btn" type="button" onClick={() => setShowPolicy((v) => !v)} style={{ marginBottom: 12 }}>
+                {showPolicy ? 'Hide action policy' : 'Action permissions'}
+              </button>
+
+              {showPolicy && (
+                <div className="plan" style={{ marginBottom: 14 }}>
+                  {[
+                    ['research','Research'],
+                    ['externalRead','Read connected/external data'],
+                    ['externalWrite','Write/change external systems'],
+                    ['deploy','Deploy/publish'],
+                    ['emailSend','Send messages/email'],
+                  ].map(([key,label]) => (
+                    <div className="field" key={key}>
+                      <label>{label}</label>
+                      <select className="select" value={toolPolicy[key]} onChange={(e) => setToolPolicy((p) => ({ ...p, [key]: e.target.value }))}>
+                        <option value="auto">Allow automatically</option>
+                        <option value="approval">Require my approval</option>
+                        <option value="blocked">Blocked</option>
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <button className="launch" type="submit" disabled={launching || !goal.trim()}>
                 {launching ? 'Dispatching…' : 'Launch mission'}
               </button>
-              <p className="note">Workflow state is durable on Vercel. This first release stores your mission index and reusable context on this device; cross-device memory and external action tools are the next control-plane layer.</p>
+              <p className="note">Recurring missions auto-run AI work, but external side effects are converted into approval requests according to your policy.</p>
             </form>
           </div>
         </section>
@@ -303,7 +389,7 @@ export default function Home() {
           <div className="queueHead">
             <div>
               <h2>Mission queue</h2>
-              <p className="sub" style={{ margin: '3px 0 0' }}>Live durable runs</p>
+              <p className="sub" style={{ margin: '3px 0 0' }}>Durable + cross-device</p>
             </div>
           </div>
 
@@ -311,10 +397,10 @@ export default function Home() {
             <div className="statrow">
               <div className="stat"><b>{stats.active}</b><span>Active</span></div>
               <div className="stat"><b>{stats.waiting}</b><span>Approval</span></div>
-              <div className="stat"><b>{stats.done}</b><span>Done</span></div>
+              <div className="stat"><b>{stats.recurring}</b><span>Recurring</span></div>
             </div>
 
-            {!missions.length && <div className="empty">No missions yet. Dispatch the first one from the left.</div>}
+            {!missions.length && <div className="empty">No missions yet. Dispatch one and it will sync here across devices.</div>}
 
             {missions.map((mission) => (
               <article className="mission" key={mission.id}>
@@ -322,11 +408,18 @@ export default function Home() {
                   <div>
                     <span className={'badge ' + statusClass(mission.status)}>{statusLabel(mission.status)}</span>
                     <h3>{mission.goal}</h3>
-                    <div className="meta">{mission.project} · {new Date(mission.createdAt).toLocaleString()}</div>
+                    <div className="meta">
+                      {mission.project} · {new Date(mission.createdAt).toLocaleString()}
+                      {mission.recurrence !== 'none' ? ' · ' + mission.recurrence : ''}
+                    </div>
                   </div>
                 </div>
 
                 <div className="body">
+                  {mission.nextRunAt && mission.recurrence !== 'none' && (
+                    <div className="objective"><strong>Next automatic run:</strong> {new Date(mission.nextRunAt).toLocaleString()}</div>
+                  )}
+
                   {mission.plan && (
                     <div className="plan">
                       <div className="objective"><strong>Objective:</strong> {mission.plan.objective || mission.goal}</div>
@@ -356,16 +449,25 @@ export default function Home() {
                       <h4>Execution result</h4>
                       {mission.result.summary && <p className="objective">{mission.result.summary}</p>}
                       {mission.result.workProduct && <div className="work">{mission.result.workProduct}</div>}
+
+                      {!!mission.result.actionRequests?.length && (
+                        <div className="steps">
+                          {mission.result.actionRequests.map((item, index) => (
+                            <div className="step" key={'action-' + index}>
+                              <b>Approval request · {item.type || 'external action'}</b><br />
+                              {item.description || 'External action requested.'}<br />
+                              <span>Status: {item.status || 'pending'}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       {!!mission.result.blockedOn?.length && (
                         <div className="steps">
                           {mission.result.blockedOn.map((item, index) => <div className="step" key={'block-' + index}><b>Blocked:</b> {item}</div>)}
                         </div>
                       )}
-                      {!!mission.result.nextActions?.length && (
-                        <div className="steps">
-                          {mission.result.nextActions.map((item, index) => <div className="step" key={'next-' + index}><b>Next:</b> {item}</div>)}
-                        </div>
-                      )}
+
                       <div className="actions">
                         <button className="btn" onClick={() => copyWork(mission.result.workProduct || mission.result.summary || '')}>Copy work product</button>
                       </div>
@@ -375,9 +477,8 @@ export default function Home() {
                   {mission.error && <div className="error">{mission.error}</div>}
 
                   <div className="actions">
-                    {mission.planRunId && <span className="meta">Plan run: {mission.planRunId.slice(0, 18)}…</span>}
-                    {mission.executeRunId && <span className="meta">Execute run: {mission.executeRunId.slice(0, 18)}…</span>}
-                    {['completed', 'failed', 'canceled'].includes(mission.status) && <button className="btn" onClick={() => removeMission(mission.id)}>Clear</button>}
+                    {mission.recurrence !== 'none' && <button className="btn danger" onClick={() => stopRecurrence(mission.id)}>Stop recurring</button>}
+                    {['completed','failed','canceled'].includes(mission.status) && mission.recurrence === 'none' && <button className="btn" onClick={() => removeMission(mission.id)}>Clear</button>}
                   </div>
                 </div>
               </article>
@@ -386,7 +487,7 @@ export default function Home() {
         </section>
       </div>
 
-      <div className="footer">McLain Agent OS · durable mission orchestration · owner controlled</div>
+      <div className="footer">McLain Agent OS · durable missions · private memory · owner-controlled actions</div>
     </main>
   );
 }
